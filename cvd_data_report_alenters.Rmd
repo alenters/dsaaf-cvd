@@ -1,0 +1,950 @@
+---
+title: "COVID-19 Data Report"
+author: "A. Lenters"
+output: 
+  pdf_document: default
+  html_document: default
+---
+
+# Overview {#sec-overview}
+
+Welcome to my analysis of the Johns Hopkins COVID-19 dataset.[^1] In this report, I will build models to predict the number of new deaths attributed to COVID-19 in a particular country/region, based on new case counts from earlier weeks. After tidying the data, I will be using tidyverse's many-models paradigm to easily fit one model per location.
+
+[^1]: Sourced from: <https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data>
+
+## Contents
+
+-   [Setup](#sec-setup) performs setup, including user definitions (e.g. data locations) and libraries.
+-   [Verbs](#sec-verbs) creates custom verbs for data wrangling, for use with `dplyr`'s pipes.
+-   [Wrangle Data](#sec-wrangle-data) imports, tidies and transforms the data.
+-   [Data Summary](#sec-summary) summarizes the data and ensures there are no missing values.
+-   [Transform](#sec-transform) transforms the tidied data to prepare it for modelling, using differencing and lagging transforms.
+-   [Exploratory Data Analysis](#sec-eda) uses visualization to get model ideas.
+-   [Modelling](#sec-modelling) fits models to the data, and evaluates them using various approaches.
+-   [Conclusion](#sec-conclusion) summarizes my findings and next steps, and discusses potential sources of bias.
+-   [Appendix](#sec-appendix) shows my session information.
+
+## Note to peer graders
+
+You can find my data source overview in [Wrangle Data](#sec-wrangle-data), my missing data check in [Data Summary](#sec-summary), my plots in [Exploratory Data Analysis](#sec-eda)/[Modelling](#sec-modelling), my model fits in [Modelling](#sec-modelling), and my discussion of bias in [Conclusion](#sec-conclusion).
+
+\pagebreak
+
+# Setup {#sec-setup}
+
+## Setup $\blacktriangleright$ Packages
+
+I have not used any unusual packages in this analysis, but users may still want to upgrade to the latest versions of `tidyverse` and `knitr` for optimal performance, by running `install.packages(c("tidyverse", "knitr"))` in the console.
+
+```{r setup}
+library(tidyverse)
+library(knitr)
+
+set.seed(1)
+
+options(
+  "pillar.print_min" = 4,
+  "pillar.print_max" = 4
+)
+```
+
+## Setup $\blacktriangleright$ User definitions
+
+Here, users of this report can set the locations and backup locations of the files used in this analysis. The URLs that have been provided are publicly accessible, so no changes should be necessary.
+
+```{r user_defintions}
+global_cases_url <- paste0("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/",
+                          "master/csse_covid_19_data/csse_covid_19_time_series/",
+                          "time_series_covid19_confirmed_global.csv")
+
+global_cases_url_bak <- paste0("https://raw.githubusercontent.com/alenters/dsaaf-cvd/",
+                               "main/backup_data/",
+                               "time_series_covid19_confirmed_global.csv")
+
+global_deaths_url <- paste0("https://raw.githubusercontent.com/CSSEGISandData/",
+                            "COVID-19/master/csse_covid_19_data/",
+                            "csse_covid_19_time_series/",
+                            "time_series_covid19_deaths_global.csv")
+
+global_deaths_url_bak <- paste0("https://raw.githubusercontent.com/alenters/",
+                                "dsaaf-cvd/main/backup_data/",
+                                "time_series_covid19_deaths_global.csv")
+
+global_pop_url <- paste0("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/",
+                         "master/csse_covid_19_data/UID_ISO_FIPS_LookUp_Table.csv")
+
+global_pop_url_bak <- paste0("https://raw.githubusercontent.com/alenters/dsaaf-cvd/",
+                             "main/backup_data/UID_ISO_FIPS_LookUp_Table.csv")
+
+us_cases_url <- paste0("https://github.com/CSSEGISandData/COVID-19/raw/master/",
+                       "csse_covid_19_data/csse_covid_19_time_series/",
+                       "time_series_covid19_confirmed_US.csv")
+
+us_cases_url_bak <- paste0("https://github.com/alenters/dsaaf-cvd/raw/main/",
+                           "backup_data/time_series_covid19_confirmed_US.csv")
+
+us_deaths_url <- paste0("https://github.com/CSSEGISandData/COVID-19/raw/master/",
+                        "csse_covid_19_data/csse_covid_19_time_series/",
+                        "time_series_covid19_deaths_US.csv")
+
+us_deaths_url_bak <- paste0("https://github.com/alenters/dsaaf-cvd/raw/main/",
+                            "backup_data/time_series_covid19_deaths_US.csv")
+```
+
+## Setup $\blacktriangleright$ Fixed definitions
+
+Below are constants I use in my analysis, which you can optionally adjust. But the document should knit on any machine with the values I have set.
+
+```{r fixed_definitions}
+data_format_str <- "\\d{1,2}\\/\\d{1,2}\\/\\d{2}"
+sample_size <- 16
+min_datapoints <- 100
+train_end_date <- ymd("2022-01-01")
+colors <- c("actuals" = "#88cccc", "predictions" = "red")
+
+suggested_theme_base_size <- switch (
+	knitr::pandoc_to(),
+	latex = 9,
+	html = 11,
+	revealjs = 14,
+	10 # conservative default
+)
+```
+
+\pagebreak
+
+# Verbs {#sec-verbs}
+
+All verbs used in the analysis will be created in this section. I have given them self-explanatory names, so you can skip this section and proceed to [Wrangle Data](#sec-wrangle-data), and return here to look at details as necessary.
+
+## Verbs $\blacktriangleright$ Import & Tidy
+
+```{r import_helpers}
+get_file <- function(fn, url, url_bak) {
+  tryCatch(fn(url),
+    error = function(w) {
+      warning(rlang::englue(
+        "Could not read file from {url}. Reverting to backup @ {url_bak}."
+      ))
+      fn(url_bak)
+    }
+  )
+}
+```
+
+```{r import_us_cases_data}
+read_us_cases <- function(url) {
+  read_csv(url,
+    col_types = cols(
+      UID = col_skip(),
+      iso2 = col_skip(),
+      iso3 = col_skip(),
+      code3 = col_skip(),
+      FIPS = col_skip(),
+      Admin2 = col_skip(),
+      Province_State = col_character(),
+      Country_Region = col_character(),
+      Lat = col_skip(),
+      Long_ = col_skip(),
+      Combined_Key = col_skip(),
+      .default = col_integer()
+    )
+  ) %>%
+    pivot_longer(
+      cols = matches(data_format_str),
+      names_to = "date",
+      values_to = "cases_county_level"
+    ) %>%
+    mutate(date = mdy(date)) %>%
+    unite(combined_key, Province_State:Country_Region,
+      sep = ", ",
+      na.rm = TRUE
+    ) %>%
+    mutate(combined_key = as.factor(combined_key)) %>%
+    group_by(combined_key, date) %>%
+    summarize(
+      cases = sum(cases_county_level),
+      .groups = "drop"
+    ) %>%
+    select(combined_key, date, cases)
+}
+
+get_us_cases <- function() {
+  get_file(read_us_cases, us_cases_url, us_cases_url_bak)
+}
+```
+
+```{r import_us_deaths_data}
+read_us_deaths <- function(url) {
+  read_csv(url,
+    col_types = cols(
+      UID = col_skip(),
+      iso2 = col_skip(),
+      iso3 = col_skip(),
+      code3 = col_skip(),
+      FIPS = col_skip(),
+      Admin2 = col_skip(),
+      Province_State = col_character(),
+      Country_Region = col_character(),
+      Lat = col_skip(),
+      Long_ = col_skip(),
+      Combined_Key = col_skip(),
+      Population = col_integer(),
+      .default = col_integer()
+    )
+  ) %>%
+    pivot_longer(
+      cols = matches(data_format_str),
+      names_to = "date",
+      values_to = "deaths_county_level"
+    ) %>%
+    mutate(date = mdy(date)) %>%
+    unite(combined_key, Province_State:Country_Region,
+      sep = ", ",
+      na.rm = TRUE
+    ) %>%
+    mutate(combined_key = as.factor(combined_key)) %>%
+    group_by(combined_key, date) %>%
+    summarize(
+      deaths = sum(deaths_county_level),
+      population = sum(Population),
+      .groups = "drop"
+    ) %>%
+    select(combined_key, date, deaths, population)
+}
+
+get_us_deaths <- function() {
+  get_file(read_us_deaths, us_deaths_url, us_deaths_url_bak)
+}
+```
+
+```{r import_global_cases_data}
+read_global_cases <- function(url) {
+  read_csv(url,
+    col_types = cols(
+      `Province/State` = col_character(),
+      `Country/Region` = col_character(),
+      Lat = col_skip(),
+      Long = col_skip(),
+      .default = col_integer()
+    )
+  ) %>%
+    pivot_longer(
+      cols = matches(data_format_str),
+      names_to = "date",
+      values_to = "cases"
+    ) %>%
+    mutate(date = mdy(date)) %>%
+    unite(combined_key, `Province/State`:`Country/Region`,
+      sep = ", ",
+      na.rm = TRUE
+    ) %>%
+    select(combined_key, date, cases)
+}
+
+get_global_cases <- function() {
+  get_file(read_global_cases, global_cases_url, global_cases_url_bak)
+}
+```
+
+```{r import_global_deaths_data}
+read_global_deaths <- function(url) {
+  read_csv(url,
+    col_types = cols(
+      `Province/State` = col_character(),
+      `Country/Region` = col_character(),
+      Lat = col_skip(),
+      Long = col_skip(),
+      .default = col_integer()
+    )
+  ) %>%
+    pivot_longer(
+      cols = matches(data_format_str),
+      names_to = "date",
+      values_to = "deaths"
+    ) %>%
+    mutate(date = mdy(date)) %>%
+    unite(combined_key, `Province/State`:`Country/Region`,
+      sep = ", ",
+      na.rm = TRUE
+    ) %>%
+    select(combined_key, date, deaths)
+}
+
+get_global_deaths <- function() {
+  get_file(read_global_deaths, global_deaths_url, global_deaths_url_bak)
+}
+```
+
+```{r import_population_data}
+read_global_population <- function(url) {
+  read_csv(url,
+    col_types = cols_only(
+      Combined_Key = col_character(),
+      Population = col_integer()
+    )
+  ) %>%
+    rename(
+      combined_key = Combined_Key,
+      population = Population
+    ) %>%
+    select(combined_key, population)
+}
+
+get_global_population <- function() {
+  get_file(read_global_population, global_pop_url, global_pop_url_bak)
+}
+```
+
+```{r tidy_helpers}
+has_na <- function(df) {
+  sum(is.na(df)) > 0
+}
+
+count_duplicates <- function(df) {
+  df %>%
+    tally(name = "copy_count") %>%
+    group_by(copy_count) %>%
+    tally()
+}
+```
+
+## Verbs $\blacktriangleright$ Transform
+
+```{r roll_up}
+roll_up <- function(df, ..., date_unit = "week") {
+  df %>%
+    mutate(date = floor_date(date, unit = date_unit)) %>%
+    group_by(pick(where(~ !is.numeric(.x)))) %>%
+    summarize(..., .groups = "drop")
+}
+```
+
+```{r add_lags}
+add_lags <- function(df, .col, .group_by, .order_by, ...,
+                     lags = 0:9,
+                     prefix = "lag_") {
+  lag_tibble <- lags %>%
+    set_names(map(lags, ~ paste0(prefix, .x))) %>%
+    as_tibble_row()
+  list_cbind(list(df, lag_tibble)) %>%
+    group_by(pick({{ .group_by }})) %>%
+    arrange(pick({{ .order_by }})) %>%
+    mutate(across(
+      starts_with(prefix), ~ lag({{ .col }}, n = .x[[1]], default = 0)
+    )) %>%
+    ungroup()
+}
+```
+
+```{r add_difference_col}
+add_difference_col <- function(df, .col, new_col_name, .group_by, .order_by) {
+  df %>%
+    group_by(pick({{ .group_by }})) %>%
+    arrange(pick({{ .order_by }}), .by_group = TRUE) %>%
+    mutate({{ new_col_name }} := {{ .col }} - lag({{ .col }}, default = 0)) %>%
+    ungroup()
+}
+```
+
+## Verbs $\blacktriangleright$ Model
+
+```{r fit_model_per_location}
+fit_model_per_location <- function(df, .group_by, model_function) {
+  df %>%
+    group_by(pick({{ .group_by }})) %>%
+    nest() %>%
+    mutate(model = map(data, model_function))
+}
+```
+
+```{r get_model_pred_info}
+get_model_pred_info <- function(fit_nested_df) {
+  fit_nested_df %>%
+    mutate(
+      fits = map(model, broom::glance),
+      pred = map2(model, data, ~ predict(.x, .y, type = "response"))
+    ) %>%
+    unnest(c(fits, data, pred)) %>%
+    mutate(
+      resid = pred - new_deaths,
+      gof = 1 - deviance / null.deviance
+    )
+}
+```
+
+```{r get_model_fit_info}
+get_model_fit_info <- function(fit_nested_df) {
+  fit_nested_df %>%
+    mutate(coeffs = map(model, broom::tidy)) %>%
+    unnest(c(coeffs)) %>%
+    mutate(sig_label = case_when(
+      p.value <= 0.001 ~ "***",
+      p.value <= 0.01 ~ "**",
+      p.value <= 0.05 ~ "*",
+      p.value <= 0.1 ~ ".",
+      .default = ""
+    ))
+}
+```
+
+## Verbs $\blacktriangleright$ Communicate
+
+```{r present-table}
+present_table <- function(df, ..., n = 4, caption = "") {
+  knitr::kable(head(df, 
+                    n = n),
+               align = "l",
+               caption = caption)
+}
+```
+
+```{r plot_model_eval}
+plot_model_eval <- function(.model) {
+  par(mfrow = c(2, 2))
+  plot(.model)
+}
+```
+
+```{r model_coeffs}
+plot_model_coeffs <- function(df, .location_col, .gof_col, ..., 
+                              show_text = TRUE,
+                              theme_base_size = suggested_theme_base_size) {
+  ret <- df %>%
+    ggplot(aes(x = term, 
+               y = reorder({{ .location_col }}, {{ .gof_col }}), 
+               fill = estimate)) +
+    geom_tile() +
+    geom_text(aes(label = sig_label), color = "#333333") +
+    scale_x_discrete(guide = guide_axis(angle = 90), position = "top") +
+    scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0) +
+    theme_minimal(base_size = theme_base_size) +
+    theme(legend.position = "bottom") +
+    labs(
+      title = "Looking for patterns in model coefficients and p-values",
+      x = "Model feature",
+      y = "Model",
+      fill = "Feature coefficient",
+      caption = "Feature p-value: < 0.001 = ***\n< 0.01 = **\n< 0.05 = *\n< 0.1 = ."
+    )
+
+  if (!show_text) {
+    ret <- ret +
+      theme(axis.text.y = element_blank())
+  }
+  ret
+}
+```
+
+\pagebreak
+
+# Wrangle Data {#sec-wrangle-data}
+
+I will now use the verbs I created in [Verbs](#sec-verbs) to import, tidy, transform and visualize the data, in preparation for modelling.
+
+## Wrangle $\blacktriangleright$ Data Source
+
+The data we were asked to analyze for this assignment is a COVID-19 dataset from Johns Hopkins.[^2] It contains 5 main files of interest:
+
+[^2]: Sourced from: <https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data>
+
+-   Global cases: `time_series_covid19_confirmed_global.csv`
+-   US cases: `time_series_covid19_confirmed_US.csv`
+-   Global deaths: `time_series_covid19_deaths_global.csv`
+-   US deaths: `time_series_covid19_deaths_US.csv`
+-   Global population: `UID_ISO_FIPS_LookUp_Table.csv`
+
+This analysis was initially designed to be able to work with US and Global data simultaneously. However, the US files are significantly larger than the Global files, so, in order to speed up knitting time, I will use only the Global files. Additionally, I have no need for population data in the analysis I plan to run, so I will omit that as well.
+
+The files I will use in this analysis are therefore:
+
+-   Global cases: `time_series_covid19_confirmed_global.csv`
+-   Global deaths: `time_series_covid19_deaths_global.csv`
+
+These files collate daily counts of COVID-19 `cases` and `deaths` from governments and health authorities around the world. Although the raw data has daily granularity, I will be transforming it to weekly for use in my model.
+
+## Wrangle $\blacktriangleright$ Import Global Cases
+
+Let's import the global cases data. I will immediately roll it up to weekly granularity, to make it a more manageable size:
+
+```{r wrangle_global_cases}
+global_cases <- get_global_cases() %>%
+  roll_up(
+    cases = max(cases),
+    date_unit = "week"
+  )
+```
+
+We end up with a dataframe like this:
+
+```{r tbl-global-cases-sample}
+sample_n(global_cases, 4) %>%
+  present_table(caption = "Four randomly-sampled rows from `global_cases`")
+```
+
+Let's look at the data graphically:
+
+```{r fig-global-cases, fig.cap="Output of `plot()` for `global_cases`."}
+plot(global_cases)
+```
+
+Note that `cases` are monotonically increasing, i.e. the metric reported in the files is actually **cumulative** cases, which is why I used `max()` to perform the aggragation when rolling up from daily to weekly. I want to work with incremental cases, so I will need to address this.
+
+## Wrangle $\blacktriangleright$ Import Global Deaths
+
+Now, let's repeat the above process to import the global deaths data:
+
+```{r wrangle_global_deaths}
+global_deaths <- get_global_deaths() %>%
+  roll_up(
+    deaths = max(deaths),
+    date_unit = "week"
+  )
+```
+
+We end up with a dataframe like this:
+
+```{r tbl-global-deaths-sample}
+sample_n(global_deaths, 4) %>%
+  present_table(caption = "Four randomly-sampled rows from `global_deaths`")
+```
+
+Graphical view:
+
+```{r fig-global-deaths, fig.cap="Output of `plot()` for `global_deaths`."}
+plot(global_deaths)
+```
+
+Global deaths are also cumulative.
+
+## Wrangle $\blacktriangleright$ Tidy
+
+Before doing any further work with the dataframes, I will check each one to ensure that it is tidy.
+
+### The three tidiness requirements:
+
+For a tibble to be tidy, three requirements should be met:
+
+1.  Each variable has its own column
+2.  Each observation has its own row
+3.  Each value has its own cell
+
+The book *R For Data Science* notes[^3] that if two of these are true the third is also guaranteed to be true, so I will check the first two.
+
+[^3]: <https://r4ds.had.co.nz/tidy-data.html>
+
+### Tidy $\blacktriangleright$ Does each variable have its own column?
+
+Short answer: **yes**.
+
+This was handled during import, by pivoting all of the date columns (that were making each file extremely wide) into a `location, date, value` format that stores the timeseries of cases and deaths for each location.
+
+```{r glimpse_global_cases}
+glimpse(global_cases)
+```
+
+```{r glimpse_global_deaths}
+glimpse(global_deaths)
+```
+
+No variable is spread across multiple columns, and no column contains multiple variables, so this requirement is met.
+
+### Tidy $\blacktriangleright$ Does each observation have its own row?
+
+Short answer: **yes**.
+
+The main thing to look for here is duplicate observations in a single location/date. I created a `count_duplicates()` verb to perform the duplicate-checking. Let's use `purrr::map()` to check all dataframes simultaneously, and `purrr::list_rbind()` to return the results in a dataframe.
+
+```{r tbl-check-obs-rows}
+list(
+  global_cases = global_cases %>% group_by(combined_key, date),
+  global_deaths = global_deaths %>% group_by(combined_key, date)
+) %>%
+  map(count_duplicates) %>%
+  list_rbind(names_to = "dataframe") %>%
+  present_table(n = Inf,
+                caption = "Confirming that no value of `copy_count` exceeds 1.")
+```
+
+If there were duplicates in any of the dataframes, `count_duplicates()` would have reported values `> 1` in `copy_count`. Therefore, there are no duplicates in the data.
+
+We have confirmed that at least two of the three tidiness requirements are met, so the data is tidy.
+
+## Wrangle $\blacktriangleright$ Join Global dataframes
+
+Let's join `cases` and `deaths` information together to make a single dataframe, and then add some new columns that I will need for modelling. This would arguably be even tidier than having the information spread across two different dataframes.
+
+`global_cases` and `global_deaths` should contain exactly the same rows, differing only on whether they contain a `cases` or `deaths` column. Therefore, I will join them using `inner_join()`, with `relationship = "one-to-one"` and `unmatched = "error"`. This will cause the code to halt if either of the dataframes is missing row, relative to the other.
+
+```{r merge_global}
+global <- global_cases %>%
+  inner_join(global_deaths, 
+    by = join_by(combined_key, date),
+    relationship = "one-to-one",
+    unmatched = "error")
+```
+
+There were no errors, so the inner join worked perfectly, and we now have a single dataframe called `global` to use in the rest of the analysis.
+
+\pagebreak
+
+# Data Summary {#sec-summary}
+
+Prior to modelling, I want to convert the `cases` and `deaths` columns from cumulative to incremental, and I want to add lag columns. Before doing any of this, it would be a good idea to check for missing values and fix any we find. Missing values will affect plots and calculations.
+
+```{r global_summary}
+global %>%
+  summary()
+```
+
+According to the summary, there are no missing values in the `global` dataframe. (They would have their own row in the summary if they existed.) We can run this check to throw an error if missing values creep into the data in the future.
+
+```{r na-check}
+if(global %>% has_na()) {
+  stop("NA values found in dataset. Please fix.")
+}
+```
+
+\pagebreak
+
+# Transform {#sec-transform}
+
+Now that the raw data is as tidy as can be, let's move on to transforming it to suit our modelling needs.
+
+## Transform $\blacktriangleright$ Cumulative to incremental
+
+We saw earlier that the `cases` and `deaths` data provided is cumulative, but for my analysis, I would like to work with incremental values. I will use a differencing transform to convert from cumulative to incremental.
+
+I will create two incremental columns called `new_cases` and `new_deaths`, using the `add_difference_col()` verb, which internally makes use of `dplyr`'s `lag()` function.
+
+```{r add_differencing}
+global <- global %>%
+  add_difference_col(cases, "new_cases", combined_key, date) %>%
+  add_difference_col(deaths, "new_deaths", combined_key, date)
+```
+
+Let's pick a random location and view the results for it:
+
+```{r select_random_location}
+random_location <- global %>%
+  filter(deaths > 0) %>%
+  select(combined_key) %>%
+  sample_n(1) %>%
+  deframe()
+```
+
+```{r tbl-differenced-global, eval=TRUE}
+global %>% 
+  filter(combined_key == random_location) %>%
+  filter(deaths > 0) %>%
+  arrange(date) %>%
+  present_table(n = 10,
+                caption = paste("Post-differencing. Ten consecutive rows from",
+                                "`global`, for a random location."))
+```
+
+## Transform $\blacktriangleright$ Add lags
+
+The main features I want to use for predicting weekly `deaths` are the weekly `cases` from past weeks. These can be obtained using `dplyr`'s `lag()` function. I wrote the verb `add_lags()` to add multiple lag columns simultaneously. It takes care of things like grouping by location and sorting by date, to ensure that `lag()` obtains the correct numbers for each row in the dataframe.
+
+```{r add_all_lags}
+global <- global %>%
+  add_lags(new_cases, combined_key, date, 
+           lags = 0:8, 
+           prefix = "new_cases_lag_")
+```
+
+Let's view the result for the same random location as before, but with the table transposed to make it easier to read. I've also restricted the date range to March 2020, for the same reason.
+
+```{r tbl-lagged-global}
+global %>% 
+  filter(combined_key == random_location) %>%
+  filter(date >= ymd("2020-03-01") & date < ymd("2020-04-01")) %>%
+  arrange(date) %>%
+  t() %>%
+  present_table(n = Inf,
+                caption = "Post-lagging, for a random location.")
+```
+
+As expected, lagging by `n` shifts values by `n` time periods (weeks).
+
+## Transform $\blacktriangleright$ Missing value recheck
+
+Let's rerun our check for missing values, to ensure that our transformations didn't insert missing values in any of the new columns.
+
+```{r na-check-rerun}
+if(global %>% has_na()) {
+  stop("NA values found in dataset. Please fix.")
+}
+```
+
+\pagebreak
+
+# Exploratory Data Analysis {#sec-eda}
+
+Let's visually check for a relationship between new_cases and new_deaths in various locations.
+
+I will be plotting on a log-log scale, so I will filter for values `> 0`.
+
+```{r fig-visualize-relationships, fig.cap="Relationship between weekly new cases and weekly new deaths, at various lags", fig.height = 8}
+global %>%
+  pivot_longer(starts_with("new_cases_lag_"),
+    names_to = "lag_amount",
+    values_to = "val"
+  ) %>%
+  filter(val > 0 & new_deaths > 0) %>%
+  ggplot(aes(x = val, y = new_deaths)) +
+  geom_point(aes(color = combined_key), alpha = 0.4) +
+  geom_smooth(method = "lm", color = "black", alpha = 0.5) +
+  scale_x_continuous(trans = "log10") +
+  scale_y_continuous(trans = "log10") +
+  theme_minimal() +
+  theme(legend.position = "none", aspect.ratio = 1) +
+  facet_wrap(~lag_amount, ncol = 3) +
+  labs(
+    title = "Do previous weeks' case numbers predict deaths?",
+    subtitle = "Visually, a 2-week lag looks like a sweet spot",
+    x = "Lagged new cases (log scale)",
+    y = "New deaths (log scale)"
+  )
+```
+
+From a purely visual analysis, `log(new_deaths)` seems to have the best correlation with `log(new_cases)` when lagged by 0-2 weeks. Longer lags cause the correlation to weaken. But it would be interesting to try to formalize this relationship using a model.
+
+\pagebreak
+
+# Modelling {#sec-modelling}
+
+## Model $\blacktriangleright$ Filtering
+
+Let's first apply a bit of filtering to `global`, to exclude any values that won't work in the models. I will exclude all rows with non-positive values, and I will also exclude locations that have fewer than `r min_datapoints` remaining points in the dataset.
+
+(There are a few negative values in the dataframe due to the differencing transform, resulting from errors in the raw data where a location's timeseries doesn't increase monotonically like it should have. Originally, I was using convex optimization to smooth the curves out prior to differencing, but it was slow to run, so instead I am just excluding problematic rows.)
+
+```{r filter_data}
+global_filtered <-
+  global %>%
+  filter(if_all(contains("deaths") | contains("cases"), ~ .x > 0))
+
+has_enough_points <- global_filtered %>%
+  count(combined_key) %>%
+  filter(n >= min_datapoints) %>%
+  select(combined_key)
+
+global_filtered <- global_filtered %>%
+  inner_join(has_enough_points, by = join_by(combined_key))
+```
+
+## Model $\blacktriangleright$ Sample locations
+
+Let's randomly select a small number of locations to plot during model evaluation, to make the figures more manageable. Random selection (vs. hardcoding a list, picking the largest locations, etc.) prevents bias from sneaking into the analysis via my choice of locations.
+
+```{r sample_locations}
+locations <- global_filtered %>%
+  select(combined_key) %>%
+  distinct() %>%
+  sample_n(sample_size)
+```
+
+## Model $\blacktriangleright$ Define model
+
+This is an important step: deciding the form of the model and what features to put in it. I have gone with a poisson model since we are dealing with count data (and I wanted to learn how to use it!)
+
+And because the various lag columns are probably highly correlated, and I want my model coefficients to be interpretable, I will select just a handful of them to use as features. My results will be only as good as my feature selection. Future work could include a more systematic way to engineer/select/decorrelate features, such as `PCA`.
+
+Note that I restrict training data to dates before `train_end_date`, which was defined above as `r train_end_date`.
+
+```{r simple_model}
+mod <- function(df) {
+  glm(new_deaths ~ log(new_cases_lag_0) + 
+                   log(new_cases_lag_2) + 
+                   log(new_cases_lag_4) + 
+                   log(new_cases_lag_6),
+    data = df %>% filter(date < train_end_date),
+    family = poisson(link = "log"),
+    na.action = na.exclude
+  )
+}
+```
+
+## Model $\blacktriangleright$ Apply "many models" pattern to create per-location models
+
+The "many models" pattern was taught in Chapter 25[^4] of the first edition of *R For Data Science*. It allows us to fit many models, while remaining in the context of a dataframe (rather than, for example, breaking out a for loop.)
+
+I wrote the verbs `fit_model_per_location()`, `get_model_pred_info()`, and `get_model_fit_info()` for:
+
+1. performing the fitting,
+2. calculating the predictions, residuals, and goodness of fit for each model,
+3. extracting each model's coefficients and their significance values
+
+[^4]: <https://r4ds.had.co.nz/many-models.html>
+
+```{r model_per_location_2, eval = TRUE}
+(model_fits <- fit_model_per_location(global_filtered, combined_key, mod))
+(model_preds <- get_model_pred_info(model_fits))
+(model_fit_info <- get_model_fit_info(model_fits))
+```
+
+## Model $\blacktriangleright$ Goodness of Fit
+
+I will use Cohen's[^5] $R^2_L$ to measure goodness of fit for my poisson model. It is bounded between 0 and 1, similar to $R^2$. Let's plot a histogram of this value for each of the many models we fit:
+
+[^5]: <https://en.wikipedia.org/wiki/Pseudo-R-squared>
+
+```{r fig-plot-gof, fig.cap="Goodness of fit for the many models."}
+model_preds %>%
+  ggplot(aes(x = gof)) +
+  geom_histogram() +
+  theme_minimal(base_size = suggested_theme_base_size) +
+  labs(
+    title = "Model fits well in most locations",
+    x = "Goodness of fit",
+    y = "Model count"
+  )
+```
+
+The histogram shows that most models have a decently high goodness of fit.
+
+## Model $\blacktriangleright$ Model coeffs
+
+I was curious to know if there is any pattern across locations in terms of which `cases` lags the model relies on to make predictions (2 weeks ago, 4 weeks ago, etc). We can use a heatmap to look for patterns. Because there are so many locations in the data, I'll first sample a handful, and then show the entire set (which will be unreadable, but will give an overall sense of the pattern).
+
+The number of \*s indicate significance level (more is better).
+
+```{r fig-select-model-fits, fig.cap="Model feature coefficients and significance, select locations.", fig.height = 9}
+model_fit_info %>%
+  inner_join(locations, 
+             by = join_by(combined_key)) %>%
+  inner_join(model_preds %>% 
+               select(combined_key, gof) %>% 
+               distinct(), 
+             by = join_by(combined_key)) %>%
+  filter(term != "(Intercept)") %>%
+  plot_model_coeffs(combined_key, gof)
+```
+
+```{r fig-all-model-fits, fig.cap="Model feature coefficients and significance, all locations.", fig.height = 9}
+model_fit_info %>%
+  inner_join(model_preds %>% 
+               select(combined_key, gof) %>% 
+               distinct(), 
+             by = join_by(combined_key)) %>%
+  filter(term != "(Intercept)") %>%
+  plot_model_coeffs(combined_key, gof, show_text = FALSE)
+```
+
+As suspected from our earlier visual analysis, across most of the models, the feature `log(new_cases_lag_2)` has the largest positive coefficient.
+
+## Model $\blacktriangleright$ Predictive performance
+
+Let's see if a model trained up to some cutoff date (`r as.character(train_end_date)`) can make good future predictions about number of new deaths, given information about number of new cases in recent weeks.
+
+```{r fig-scatter-facets-preds-ts, fig.cap="Model predictive performance visual analysis, select locations.", warning = FALSE, message = FALSE, fig.height = 16}
+
+n_cols <- switch (
+	knitr::pandoc_to(),
+	latex = 4,
+	html = 3,
+	3 # default
+)
+
+model_preds %>%
+  inner_join(locations, by = join_by(combined_key)) %>%
+  ggplot(aes(x = date)) +
+  geom_line(aes(y = new_deaths, color = "actuals"), 
+            alpha = 0.8) +
+  geom_line(aes(y = pred, color = "predictions"), 
+            linewidth = 0.7, 
+            alpha = 0.8) +
+  geom_vline(
+    xintercept = train_end_date,
+    color = "orange",
+    linetype = "dashed",
+    linewidth = 1.2
+  ) +
+  theme_minimal(base_size = suggested_theme_base_size) +
+  theme(legend.position = "top") +
+  theme(aspect.ratio = 1) +
+  scale_color_manual(values = colors) +
+  scale_x_date(breaks = as.Date(c("2021-01-01", "2023-01-01"))) +
+  scale_y_continuous(trans = "log10") +
+  facet_wrap(~combined_key, scales = "free", ncol = n_cols) +
+  labs(
+    title = "Predictive performance",
+    subtitle = paste("Per-location models fit on data up to",
+                     as.character(train_end_date)),
+    caption = paste0("Prior to ", as.character(train_end_date), 
+                    ", red-teal correspondence shows models' capacity to fit ",
+                    "the training data.\n After ", as.character(train_end_date), 
+                    ", red-teal correspondence shows models' performance on ",
+                    "unseen data.\n Each model has the same form, so it is ",
+                    "interesting to consider the performance\n similarities and ",
+                    "differences between locations.", sep = ""),
+    x = "Date",
+    y = "Incremental deaths (actual or predicted)"
+  )
+```
+
+This model evaluation could be formalized numerically, but as a starting place I like being able to see the models' performance graphically for a random sample of locations. See my takeaways in [Conclusion](#sec-conclusion).
+
+\pagebreak
+
+# Conclusion {#sec-conclusion}
+
+## Conclusion $\blacktriangleright$ Model findings
+
+In this analysis, we have seen that in general, the number of `new_cases` from 2 weeks ago are more predictive of the number of `new_deaths` than `new_cases` from 0, 4 or 6 weeks ago.
+
+A visual inspection of the location models' predictive performance shows that my modelling approach worked better in some locations than others. There could be numerous explanations for this, which could be investigated in follow-on studies.
+
+### Next steps
+
+For modelling, next steps could include a more systematic approach to feature selection/decorrelation, or experimenting with other model forms.
+
+Model evaluation could be formalized numerically. Locations could even be clustered based on their model coefficients (which features are most predictive of `deaths`) or their model predictive performance scores. Since there are so many locations, clustering them would make it easier to analyze and discuss them.
+
+## Conclusion $\blacktriangleright$ Bias
+
+It is important to consider the biases that may have influenced our work and modelling outcomes. I will focus on two potential sources of bias: personal bias and data bias.
+
+### Bias $\blacktriangleright$ Personal
+
+An area in which my personal biases influenced my work is in my modelling decisions, including:
+
+-   The problem I chose to focus on.
+-   How I decided to go about solving it (many models, largely because I had read about it and wanted to try it out).
+-   The features I chose to use.
+
+#### Mitigation
+
+One way to prevent personal biases from having an effect on one's work is to choose an evaluation procedure ahead of time, and let that procedure guide you towards the correct model. Future work could involve selecting some evaluation metric, such as RMSE, and trying out numerous models to see which one performs best (though an added complexity in this case is that we are modelling many locations simultaneously, and each location could suit a different model). Before proceeding down this path, I think it would be a good idea to use something like `tidymodels` to set up a modelling pipeline. The more efficiently I can build, train and compare models, the more likely I am to find the one(s) that are best for the data, rather than being guided by my personal modelling interests/learning objectives.
+
+A second way I prevented my personal biases from influencing my work was to use random sampling when choosing which locations' data to look at or plot. In the past, I might have picked a location that was interesting or familiar to me, which is a form of bias.
+
+### Bias $\blacktriangleright$ Data
+
+Data bias is very important to consider here. As indicated on the Johns Hopkins COVID-19 Data Repository main page[^6], each government supplied its own data via official websites. Each country/regional healthcare system was also responsible for its own testing and treatment procedures. I can think of many ways this could have influenced the data:
+
+[^6]: <https://github.com/CSSEGISandData/COVID-19>
+
+-   Test availability may have been more constrained in some locations than others, impacting the `cases` numbers.
+-   Medical treatments for COVID-19 may have varied by location, resulting in different death rates.
+-   Instructions regarding when to attribute COVID-19 as the cause of death may have varied by location.
+-   Environmental reasons: differences in strains and seasons could have impacted populations' rates of transmission, illness and death.
+-   The extent to which statistical modelling was used to generate the cases and/or deaths data in each location may also have had an impact.
+
+All of these could also change over time, further complicating the picture.
+
+#### Mitigation
+
+The concern about COVID-19 `cases` and `deaths` measurements varying by location and date was partially mitigated by the fact that I chose to model each location separately. However, it is still important to keep these differences in mind, and use them to temper our interpretations of the models. For example, if one location's model underpredicts `deaths` (compared with other models), it could be a modelling issue, it could have something to do with the quality of that location's COVID-19 treatment procedures, or, it could be due to a change in that location's testing policy causing reported `cases` to be lower than expected. The main point to keep in mind is that it is difficult to make generalizations when working with such a heterogeneous dataset.
+
+\pagebreak
+
+# Appendix {#sec-appendix}
+
+## Appendix A $\blacktriangleright$ Session Info {#appendix-a}
+
+```{r session_info}
+sessionInfo()
+```

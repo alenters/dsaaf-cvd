@@ -1,0 +1,2082 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.552">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="A. Lenters">
+
+<title>COVID-19 Data Report</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="cvd_data_report_quarto_alenters_files/libs/clipboard/clipboard.min.js"></script>
+<script src="cvd_data_report_quarto_alenters_files/libs/quarto-html/quarto.js"></script>
+<script src="cvd_data_report_quarto_alenters_files/libs/quarto-html/popper.min.js"></script>
+<script src="cvd_data_report_quarto_alenters_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="cvd_data_report_quarto_alenters_files/libs/quarto-html/anchor.min.js"></script>
+<link href="cvd_data_report_quarto_alenters_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="cvd_data_report_quarto_alenters_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="cvd_data_report_quarto_alenters_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="cvd_data_report_quarto_alenters_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="cvd_data_report_quarto_alenters_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-overview" id="toc-sec-overview" class="nav-link active" data-scroll-target="#sec-overview"><span class="header-section-number">1</span> Overview</a>
+  <ul class="collapse">
+  <li><a href="#contents" id="toc-contents" class="nav-link" data-scroll-target="#contents">Contents</a></li>
+  <li><a href="#note-to-peer-graders" id="toc-note-to-peer-graders" class="nav-link" data-scroll-target="#note-to-peer-graders">Note to peer graders</a></li>
+  </ul></li>
+  <li><a href="#sec-setup" id="toc-sec-setup" class="nav-link" data-scroll-target="#sec-setup"><span class="header-section-number">2</span> Setup</a>
+  <ul class="collapse">
+  <li><a href="#setup-blacktriangleright-packages" id="toc-setup-blacktriangleright-packages" class="nav-link" data-scroll-target="#setup-blacktriangleright-packages">Setup <span class="math inline">\(\blacktriangleright\)</span> Packages</a></li>
+  <li><a href="#setup-blacktriangleright-user-definitions" id="toc-setup-blacktriangleright-user-definitions" class="nav-link" data-scroll-target="#setup-blacktriangleright-user-definitions">Setup <span class="math inline">\(\blacktriangleright\)</span> User definitions</a></li>
+  <li><a href="#setup-blacktriangleright-fixed-definitions" id="toc-setup-blacktriangleright-fixed-definitions" class="nav-link" data-scroll-target="#setup-blacktriangleright-fixed-definitions">Setup <span class="math inline">\(\blacktriangleright\)</span> Fixed definitions</a></li>
+  </ul></li>
+  <li><a href="#sec-verbs" id="toc-sec-verbs" class="nav-link" data-scroll-target="#sec-verbs"><span class="header-section-number">3</span> Verbs</a>
+  <ul class="collapse">
+  <li><a href="#verbs-blacktriangleright-import-tidy" id="toc-verbs-blacktriangleright-import-tidy" class="nav-link" data-scroll-target="#verbs-blacktriangleright-import-tidy">Verbs <span class="math inline">\(\blacktriangleright\)</span> Import &amp; Tidy</a></li>
+  <li><a href="#verbs-blacktriangleright-transform" id="toc-verbs-blacktriangleright-transform" class="nav-link" data-scroll-target="#verbs-blacktriangleright-transform">Verbs <span class="math inline">\(\blacktriangleright\)</span> Transform</a></li>
+  <li><a href="#verbs-blacktriangleright-model" id="toc-verbs-blacktriangleright-model" class="nav-link" data-scroll-target="#verbs-blacktriangleright-model">Verbs <span class="math inline">\(\blacktriangleright\)</span> Model</a></li>
+  <li><a href="#verbs-blacktriangleright-communicate" id="toc-verbs-blacktriangleright-communicate" class="nav-link" data-scroll-target="#verbs-blacktriangleright-communicate">Verbs <span class="math inline">\(\blacktriangleright\)</span> Communicate</a></li>
+  </ul></li>
+  <li><a href="#sec-wrangle-data" id="toc-sec-wrangle-data" class="nav-link" data-scroll-target="#sec-wrangle-data"><span class="header-section-number">4</span> Wrangle Data</a>
+  <ul class="collapse">
+  <li><a href="#wrangle-blacktriangleright-data-source" id="toc-wrangle-blacktriangleright-data-source" class="nav-link" data-scroll-target="#wrangle-blacktriangleright-data-source">Wrangle <span class="math inline">\(\blacktriangleright\)</span> Data Source</a></li>
+  <li><a href="#wrangle-blacktriangleright-import-global-cases" id="toc-wrangle-blacktriangleright-import-global-cases" class="nav-link" data-scroll-target="#wrangle-blacktriangleright-import-global-cases">Wrangle <span class="math inline">\(\blacktriangleright\)</span> Import Global Cases</a></li>
+  <li><a href="#wrangle-blacktriangleright-import-global-deaths" id="toc-wrangle-blacktriangleright-import-global-deaths" class="nav-link" data-scroll-target="#wrangle-blacktriangleright-import-global-deaths">Wrangle <span class="math inline">\(\blacktriangleright\)</span> Import Global Deaths</a></li>
+  <li><a href="#wrangle-blacktriangleright-tidy" id="toc-wrangle-blacktriangleright-tidy" class="nav-link" data-scroll-target="#wrangle-blacktriangleright-tidy">Wrangle <span class="math inline">\(\blacktriangleright\)</span> Tidy</a>
+  <ul class="collapse">
+  <li><a href="#the-three-tidiness-requirements" id="toc-the-three-tidiness-requirements" class="nav-link" data-scroll-target="#the-three-tidiness-requirements">The three tidiness requirements:</a></li>
+  <li><a href="#tidy-blacktriangleright-does-each-variable-have-its-own-column" id="toc-tidy-blacktriangleright-does-each-variable-have-its-own-column" class="nav-link" data-scroll-target="#tidy-blacktriangleright-does-each-variable-have-its-own-column">Tidy <span class="math inline">\(\blacktriangleright\)</span> Does each variable have its own column?</a></li>
+  <li><a href="#tidy-blacktriangleright-does-each-observation-have-its-own-row" id="toc-tidy-blacktriangleright-does-each-observation-have-its-own-row" class="nav-link" data-scroll-target="#tidy-blacktriangleright-does-each-observation-have-its-own-row">Tidy <span class="math inline">\(\blacktriangleright\)</span> Does each observation have its own row?</a></li>
+  </ul></li>
+  <li><a href="#wrangle-blacktriangleright-join-global-dataframes" id="toc-wrangle-blacktriangleright-join-global-dataframes" class="nav-link" data-scroll-target="#wrangle-blacktriangleright-join-global-dataframes">Wrangle <span class="math inline">\(\blacktriangleright\)</span> Join Global dataframes</a></li>
+  </ul></li>
+  <li><a href="#sec-summary" id="toc-sec-summary" class="nav-link" data-scroll-target="#sec-summary"><span class="header-section-number">5</span> Data Summary</a></li>
+  <li><a href="#sec-transform" id="toc-sec-transform" class="nav-link" data-scroll-target="#sec-transform"><span class="header-section-number">6</span> Transform</a>
+  <ul class="collapse">
+  <li><a href="#transform-blacktriangleright-cumulative-to-incremental" id="toc-transform-blacktriangleright-cumulative-to-incremental" class="nav-link" data-scroll-target="#transform-blacktriangleright-cumulative-to-incremental">Transform <span class="math inline">\(\blacktriangleright\)</span> Cumulative to incremental</a></li>
+  <li><a href="#transform-blacktriangleright-add-lags" id="toc-transform-blacktriangleright-add-lags" class="nav-link" data-scroll-target="#transform-blacktriangleright-add-lags">Transform <span class="math inline">\(\blacktriangleright\)</span> Add lags</a></li>
+  <li><a href="#transform-blacktriangleright-missing-value-recheck" id="toc-transform-blacktriangleright-missing-value-recheck" class="nav-link" data-scroll-target="#transform-blacktriangleright-missing-value-recheck">Transform <span class="math inline">\(\blacktriangleright\)</span> Missing value recheck</a></li>
+  </ul></li>
+  <li><a href="#sec-eda" id="toc-sec-eda" class="nav-link" data-scroll-target="#sec-eda"><span class="header-section-number">7</span> Exploratory Data Analysis</a></li>
+  <li><a href="#sec-modelling" id="toc-sec-modelling" class="nav-link" data-scroll-target="#sec-modelling"><span class="header-section-number">8</span> Modelling</a>
+  <ul class="collapse">
+  <li><a href="#model-blacktriangleright-filtering" id="toc-model-blacktriangleright-filtering" class="nav-link" data-scroll-target="#model-blacktriangleright-filtering">Model <span class="math inline">\(\blacktriangleright\)</span> Filtering</a></li>
+  <li><a href="#model-blacktriangleright-sample-locations" id="toc-model-blacktriangleright-sample-locations" class="nav-link" data-scroll-target="#model-blacktriangleright-sample-locations">Model <span class="math inline">\(\blacktriangleright\)</span> Sample locations</a></li>
+  <li><a href="#model-blacktriangleright-define-model" id="toc-model-blacktriangleright-define-model" class="nav-link" data-scroll-target="#model-blacktriangleright-define-model">Model <span class="math inline">\(\blacktriangleright\)</span> Define model</a></li>
+  <li><a href="#model-blacktriangleright-apply-many-models-pattern-to-create-per-location-models" id="toc-model-blacktriangleright-apply-many-models-pattern-to-create-per-location-models" class="nav-link" data-scroll-target="#model-blacktriangleright-apply-many-models-pattern-to-create-per-location-models">Model <span class="math inline">\(\blacktriangleright\)</span> Apply “many models” pattern to create per-location models</a></li>
+  <li><a href="#model-blacktriangleright-goodness-of-fit" id="toc-model-blacktriangleright-goodness-of-fit" class="nav-link" data-scroll-target="#model-blacktriangleright-goodness-of-fit">Model <span class="math inline">\(\blacktriangleright\)</span> Goodness of Fit</a></li>
+  <li><a href="#model-blacktriangleright-model-coeffs" id="toc-model-blacktriangleright-model-coeffs" class="nav-link" data-scroll-target="#model-blacktriangleright-model-coeffs">Model <span class="math inline">\(\blacktriangleright\)</span> Model coeffs</a></li>
+  <li><a href="#model-blacktriangleright-predictive-performance" id="toc-model-blacktriangleright-predictive-performance" class="nav-link" data-scroll-target="#model-blacktriangleright-predictive-performance">Model <span class="math inline">\(\blacktriangleright\)</span> Predictive performance</a></li>
+  </ul></li>
+  <li><a href="#sec-conclusion" id="toc-sec-conclusion" class="nav-link" data-scroll-target="#sec-conclusion"><span class="header-section-number">9</span> Conclusion</a>
+  <ul class="collapse">
+  <li><a href="#conclusion-blacktriangleright-model-findings" id="toc-conclusion-blacktriangleright-model-findings" class="nav-link" data-scroll-target="#conclusion-blacktriangleright-model-findings">Conclusion <span class="math inline">\(\blacktriangleright\)</span> Model findings</a>
+  <ul class="collapse">
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next steps</a></li>
+  </ul></li>
+  <li><a href="#conclusion-blacktriangleright-bias" id="toc-conclusion-blacktriangleright-bias" class="nav-link" data-scroll-target="#conclusion-blacktriangleright-bias">Conclusion <span class="math inline">\(\blacktriangleright\)</span> Bias</a>
+  <ul class="collapse">
+  <li><a href="#bias-blacktriangleright-personal" id="toc-bias-blacktriangleright-personal" class="nav-link" data-scroll-target="#bias-blacktriangleright-personal">Bias <span class="math inline">\(\blacktriangleright\)</span> Personal</a></li>
+  <li><a href="#bias-blacktriangleright-data" id="toc-bias-blacktriangleright-data" class="nav-link" data-scroll-target="#bias-blacktriangleright-data">Bias <span class="math inline">\(\blacktriangleright\)</span> Data</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#sec-appendix" id="toc-sec-appendix" class="nav-link" data-scroll-target="#sec-appendix"><span class="header-section-number">10</span> Appendix</a>
+  <ul class="collapse">
+  <li><a href="#appendix-a" id="toc-appendix-a" class="nav-link" data-scroll-target="#appendix-a">Appendix A <span class="math inline">\(\blacktriangleright\)</span> Session Info</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">COVID-19 Data Report</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>A. Lenters </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="sec-overview" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Overview</h1>
+<p>Welcome to my analysis of the Johns Hopkins COVID-19 dataset.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> In this report, I will build models to predict the number of new deaths attributed to COVID-19 in a particular country/region, based on new case counts from earlier weeks. After tidying the data, I will be using tidyverse’s many-models paradigm to easily fit one model per location.</p>
+<section id="contents" class="level2">
+<h2 class="anchored" data-anchor-id="contents">Contents</h2>
+<ul>
+<li><a href="#sec-setup">Setup</a> performs setup, including user definitions (e.g.&nbsp;data locations) and libraries.</li>
+<li><a href="#sec-verbs">Verbs</a> creates custom verbs for data wrangling, for use with <code>dplyr</code>’s pipes.</li>
+<li><a href="#sec-wrangle-data">Wrangle Data</a> imports, tidies and transforms the data.</li>
+<li><a href="#sec-summary">Data Summary</a> summarizes the data and ensures there are no missing values.</li>
+<li><a href="#sec-transform">Transform</a> transforms the tidied data to prepare it for modelling, using differencing and lagging transforms.</li>
+<li><a href="#sec-eda">Exploratory Data Analysis</a> uses visualization to get model ideas.</li>
+<li><a href="#sec-modelling">Modelling</a> fits models to the data, and evaluates them using various approaches.</li>
+<li><a href="#sec-conclusion">Conclusion</a> summarizes my findings and next steps, and discusses potential sources of bias.</li>
+<li><a href="#sec-appendix">Appendix</a> shows my session information.</li>
+</ul>
+<aside id="footnotes" class="footnotes footnotes-end-of-section" role="doc-footnote">
+<hr>
+<ol>
+<li id="fn1"><p>Sourced from: <a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data" class="uri">https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>
+</section>
+<section id="note-to-peer-graders" class="level2">
+<h2 class="anchored" data-anchor-id="note-to-peer-graders">Note to peer graders</h2>
+<p>You can find my data source overview in <a href="#sec-wrangle-data">Wrangle Data</a>, my missing data check in <a href="#sec-summary">Data Summary</a>, my plots in <a href="#sec-eda">Exploratory Data Analysis</a>/<a href="#sec-modelling">Modelling</a>, my model fits in <a href="#sec-modelling">Modelling</a>, and my discussion of bias in <a href="#sec-conclusion">Conclusion</a>.</p>
+<div style="page-break-after: always;"></div>
+</section>
+</section>
+<section id="sec-setup" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Setup</h1>
+<section id="setup-blacktriangleright-packages" class="level2">
+<h2 class="anchored" data-anchor-id="setup-blacktriangleright-packages">Setup <span class="math inline">\(\blacktriangleright\)</span> Packages</h2>
+<p>I have not used any unusual packages in this analysis, but users may still want to upgrade to the latest versions of <code>tidyverse</code> and <code>knitr</code> for optimal performance, by running <code>install.packages(c("tidyverse", "knitr"))</code> in the console.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.0     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"pillar.print_min"</span> <span class="ot">=</span> <span class="dv">4</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"pillar.print_max"</span> <span class="ot">=</span> <span class="dv">4</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="setup-blacktriangleright-user-definitions" class="level2">
+<h2 class="anchored" data-anchor-id="setup-blacktriangleright-user-definitions">Setup <span class="math inline">\(\blacktriangleright\)</span> User definitions</h2>
+<p>Here, users of this report can set the locations and backup locations of the files used in this analysis. The URLs that have been provided are publicly accessible, so no changes should be necessary.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>global_cases_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/"</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"master/csse_covid_19_data/csse_covid_19_time_series/"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"time_series_covid19_confirmed_global.csv"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>global_cases_url_bak <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://raw.githubusercontent.com/alenters/dsaaf-cvd/"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"main/backup_data/"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"time_series_covid19_confirmed_global.csv"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>global_deaths_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://raw.githubusercontent.com/CSSEGISandData/"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"COVID-19/master/csse_covid_19_data/"</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"csse_covid_19_time_series/"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"time_series_covid19_deaths_global.csv"</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>global_deaths_url_bak <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://raw.githubusercontent.com/alenters/"</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"dsaaf-cvd/main/backup_data/"</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"time_series_covid19_deaths_global.csv"</span>)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>global_pop_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/"</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"master/csse_covid_19_data/UID_ISO_FIPS_LookUp_Table.csv"</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>global_pop_url_bak <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://raw.githubusercontent.com/alenters/dsaaf-cvd/"</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"main/backup_data/UID_ISO_FIPS_LookUp_Table.csv"</span>)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>us_cases_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://github.com/CSSEGISandData/COVID-19/raw/master/"</span>,</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"csse_covid_19_data/csse_covid_19_time_series/"</span>,</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"time_series_covid19_confirmed_US.csv"</span>)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>us_cases_url_bak <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://github.com/alenters/dsaaf-cvd/raw/main/"</span>,</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>                           <span class="st">"backup_data/time_series_covid19_confirmed_US.csv"</span>)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>us_deaths_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://github.com/CSSEGISandData/COVID-19/raw/master/"</span>,</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"csse_covid_19_data/csse_covid_19_time_series/"</span>,</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"time_series_covid19_deaths_US.csv"</span>)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>us_deaths_url_bak <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://github.com/alenters/dsaaf-cvd/raw/main/"</span>,</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"backup_data/time_series_covid19_deaths_US.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="setup-blacktriangleright-fixed-definitions" class="level2">
+<h2 class="anchored" data-anchor-id="setup-blacktriangleright-fixed-definitions">Setup <span class="math inline">\(\blacktriangleright\)</span> Fixed definitions</h2>
+<p>Below are constants I use in my analysis, which you can optionally adjust. But the document should knit on any machine with the values I have set.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data_format_str <span class="ot">&lt;-</span> <span class="st">"</span><span class="sc">\\</span><span class="st">d{1,2}</span><span class="sc">\\</span><span class="st">/</span><span class="sc">\\</span><span class="st">d{1,2}</span><span class="sc">\\</span><span class="st">/</span><span class="sc">\\</span><span class="st">d{2}"</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sample_size <span class="ot">&lt;-</span> <span class="dv">16</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>min_datapoints <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>train_end_date <span class="ot">&lt;-</span> <span class="fu">ymd</span>(<span class="st">"2022-01-01"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"actuals"</span> <span class="ot">=</span> <span class="st">"#88cccc"</span>, <span class="st">"predictions"</span> <span class="ot">=</span> <span class="st">"red"</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>suggested_theme_base_size <span class="ot">&lt;-</span> <span class="cf">switch</span> (</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    knitr<span class="sc">::</span><span class="fu">pandoc_to</span>(),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">latex =</span> <span class="dv">9</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">html =</span> <span class="dv">11</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">revealjs =</span> <span class="dv">14</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="dv">10</span> <span class="co"># conservative default</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+</section>
+<section id="sec-verbs" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Verbs</h1>
+<p>All verbs used in the analysis will be created in this section. I have given them self-explanatory names, so you can skip this section and proceed to <a href="#sec-wrangle-data">Wrangle Data</a>, and return here to look at details as necessary.</p>
+<section id="verbs-blacktriangleright-import-tidy" class="level2">
+<h2 class="anchored" data-anchor-id="verbs-blacktriangleright-import-tidy">Verbs <span class="math inline">\(\blacktriangleright\)</span> Import &amp; Tidy</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>get_file <span class="ot">&lt;-</span> <span class="cf">function</span>(fn, url, url_bak) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(<span class="fu">fn</span>(url),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">error =</span> <span class="cf">function</span>(w) {</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">warning</span>(rlang<span class="sc">::</span><span class="fu">englue</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Could not read file from {url}. Reverting to backup @ {url_bak}."</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>      ))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">fn</span>(url_bak)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>read_us_cases <span class="ot">&lt;-</span> <span class="cf">function</span>(url) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(url,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">col_types =</span> <span class="fu">cols</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">UID =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">iso2 =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">iso3 =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">code3 =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">FIPS =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">Admin2 =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">Province_State =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">Country_Region =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">Lat =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">Long_ =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">Combined_Key =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> <span class="fu">col_integer</span>()</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">cols =</span> <span class="fu">matches</span>(data_format_str),</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">names_to =</span> <span class="st">"date"</span>,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">values_to =</span> <span class="st">"cases_county_level"</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">mdy</span>(date)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unite</span>(combined_key, Province_State<span class="sc">:</span>Country_Region,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">sep =</span> <span class="st">", "</span>,</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">combined_key =</span> <span class="fu">as.factor</span>(combined_key)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(combined_key, date) <span class="sc">%&gt;%</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">cases =</span> <span class="fu">sum</span>(cases_county_level),</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(combined_key, date, cases)</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>get_us_cases <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_file</span>(read_us_cases, us_cases_url, us_cases_url_bak)</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>read_us_deaths <span class="ot">&lt;-</span> <span class="cf">function</span>(url) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(url,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">col_types =</span> <span class="fu">cols</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">UID =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">iso2 =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">iso3 =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">code3 =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">FIPS =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">Admin2 =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">Province_State =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">Country_Region =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">Lat =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">Long_ =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">Combined_Key =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">Population =</span> <span class="fu">col_integer</span>(),</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> <span class="fu">col_integer</span>()</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">cols =</span> <span class="fu">matches</span>(data_format_str),</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">names_to =</span> <span class="st">"date"</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">values_to =</span> <span class="st">"deaths_county_level"</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">mdy</span>(date)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unite</span>(combined_key, Province_State<span class="sc">:</span>Country_Region,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">sep =</span> <span class="st">", "</span>,</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">combined_key =</span> <span class="fu">as.factor</span>(combined_key)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(combined_key, date) <span class="sc">%&gt;%</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">deaths =</span> <span class="fu">sum</span>(deaths_county_level),</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">population =</span> <span class="fu">sum</span>(Population),</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(combined_key, date, deaths, population)</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>get_us_deaths <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_file</span>(read_us_deaths, us_deaths_url, us_deaths_url_bak)</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>read_global_cases <span class="ot">&lt;-</span> <span class="cf">function</span>(url) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(url,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">col_types =</span> <span class="fu">cols</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      <span class="st">`</span><span class="at">Province/State</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">`</span><span class="at">Country/Region</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">Lat =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">Long =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> <span class="fu">col_integer</span>()</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">cols =</span> <span class="fu">matches</span>(data_format_str),</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">names_to =</span> <span class="st">"date"</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">values_to =</span> <span class="st">"cases"</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">mdy</span>(date)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unite</span>(combined_key, <span class="st">`</span><span class="at">Province/State</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">Country/Region</span><span class="st">`</span>,</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">sep =</span> <span class="st">", "</span>,</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(combined_key, date, cases)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>get_global_cases <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_file</span>(read_global_cases, global_cases_url, global_cases_url_bak)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>read_global_deaths <span class="ot">&lt;-</span> <span class="cf">function</span>(url) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(url,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">col_types =</span> <span class="fu">cols</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>      <span class="st">`</span><span class="at">Province/State</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">`</span><span class="at">Country/Region</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">Lat =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">Long =</span> <span class="fu">col_skip</span>(),</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> <span class="fu">col_integer</span>()</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">cols =</span> <span class="fu">matches</span>(data_format_str),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">names_to =</span> <span class="st">"date"</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">values_to =</span> <span class="st">"deaths"</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">mdy</span>(date)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unite</span>(combined_key, <span class="st">`</span><span class="at">Province/State</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">Country/Region</span><span class="st">`</span>,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">sep =</span> <span class="st">", "</span>,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(combined_key, date, deaths)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>get_global_deaths <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_file</span>(read_global_deaths, global_deaths_url, global_deaths_url_bak)</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>read_global_population <span class="ot">&lt;-</span> <span class="cf">function</span>(url) {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(url,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">col_types =</span> <span class="fu">cols_only</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">Combined_Key =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">Population =</span> <span class="fu">col_integer</span>()</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">combined_key =</span> Combined_Key,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">population =</span> Population</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(combined_key, population)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>get_global_population <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_file</span>(read_global_population, global_pop_url, global_pop_url_bak)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>has_na <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">is.na</span>(df)) <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>count_duplicates <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tally</span>(<span class="at">name =</span> <span class="st">"copy_count"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(copy_count) <span class="sc">%&gt;%</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tally</span>()</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="verbs-blacktriangleright-transform" class="level2">
+<h2 class="anchored" data-anchor-id="verbs-blacktriangleright-transform">Verbs <span class="math inline">\(\blacktriangleright\)</span> Transform</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>roll_up <span class="ot">&lt;-</span> <span class="cf">function</span>(df, ..., <span class="at">date_unit =</span> <span class="st">"week"</span>) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">floor_date</span>(date, <span class="at">unit =</span> date_unit)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(<span class="fu">pick</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">is.numeric</span>(.x)))) <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(..., <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>add_lags <span class="ot">&lt;-</span> <span class="cf">function</span>(df, .col, .group_by, .order_by, ...,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">lags =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">9</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">prefix =</span> <span class="st">"lag_"</span>) {</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  lag_tibble <span class="ot">&lt;-</span> lags <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">map</span>(lags, <span class="sc">~</span> <span class="fu">paste0</span>(prefix, .x))) <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tibble_row</span>()</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list_cbind</span>(<span class="fu">list</span>(df, lag_tibble)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(<span class="fu">pick</span>({{ .group_by }})) <span class="sc">%&gt;%</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">pick</span>({{ .order_by }})) <span class="sc">%&gt;%</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">starts_with</span>(prefix), <span class="sc">~</span> <span class="fu">lag</span>({{ .col }}, <span class="at">n =</span> .x[[<span class="dv">1</span>]], <span class="at">default =</span> <span class="dv">0</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>()</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>add_difference_col <span class="ot">&lt;-</span> <span class="cf">function</span>(df, .col, new_col_name, .group_by, .order_by) {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(<span class="fu">pick</span>({{ .group_by }})) <span class="sc">%&gt;%</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">pick</span>({{ .order_by }}), <span class="at">.by_group =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>({{ new_col_name }} <span class="sc">:</span><span class="er">=</span> {{ .col }} <span class="sc">-</span> <span class="fu">lag</span>({{ .col }}, <span class="at">default =</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>()</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="verbs-blacktriangleright-model" class="level2">
+<h2 class="anchored" data-anchor-id="verbs-blacktriangleright-model">Verbs <span class="math inline">\(\blacktriangleright\)</span> Model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit_model_per_location <span class="ot">&lt;-</span> <span class="cf">function</span>(df, .group_by, model_function) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(<span class="fu">pick</span>({{ .group_by }})) <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nest</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">map</span>(data, model_function))</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>get_model_pred_info <span class="ot">&lt;-</span> <span class="cf">function</span>(fit_nested_df) {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  fit_nested_df <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">fits =</span> <span class="fu">map</span>(model, broom<span class="sc">::</span>glance),</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">pred =</span> <span class="fu">map2</span>(model, data, <span class="sc">~</span> <span class="fu">predict</span>(.x, .y, <span class="at">type =</span> <span class="st">"response"</span>))</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unnest</span>(<span class="fu">c</span>(fits, data, pred)) <span class="sc">%&gt;%</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">resid =</span> pred <span class="sc">-</span> new_deaths,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">gof =</span> <span class="dv">1</span> <span class="sc">-</span> deviance <span class="sc">/</span> null.deviance</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>get_model_fit_info <span class="ot">&lt;-</span> <span class="cf">function</span>(fit_nested_df) {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  fit_nested_df <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">coeffs =</span> <span class="fu">map</span>(model, broom<span class="sc">::</span>tidy)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unnest</span>(<span class="fu">c</span>(coeffs)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sig_label =</span> <span class="fu">case_when</span>(</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>      p.value <span class="sc">&lt;=</span> <span class="fl">0.001</span> <span class="sc">~</span> <span class="st">"***"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>      p.value <span class="sc">&lt;=</span> <span class="fl">0.01</span> <span class="sc">~</span> <span class="st">"**"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>      p.value <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="st">"*"</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>      p.value <span class="sc">&lt;=</span> <span class="fl">0.1</span> <span class="sc">~</span> <span class="st">"."</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> <span class="st">""</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="verbs-blacktriangleright-communicate" class="level2">
+<h2 class="anchored" data-anchor-id="verbs-blacktriangleright-communicate">Verbs <span class="math inline">\(\blacktriangleright\)</span> Communicate</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>present_table <span class="ot">&lt;-</span> <span class="cf">function</span>(df, ..., <span class="at">n =</span> <span class="dv">4</span>, <span class="at">caption =</span> <span class="st">""</span>) {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(df, </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">n =</span> n),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">align =</span> <span class="st">"l"</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">caption =</span> caption)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>plot_model_eval <span class="ot">&lt;-</span> <span class="cf">function</span>(.model) {</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(.model)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>plot_model_coeffs <span class="ot">&lt;-</span> <span class="cf">function</span>(df, .location_col, .gof_col, ..., </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">show_text =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">theme_base_size =</span> suggested_theme_base_size) {</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  ret <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> term, </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> <span class="fu">reorder</span>({{ .location_col }}, {{ .gof_col }}), </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">fill =</span> estimate)) <span class="sc">+</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> sig_label), <span class="at">color =</span> <span class="st">"#333333"</span>) <span class="sc">+</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_discrete</span>(<span class="at">guide =</span> <span class="fu">guide_axis</span>(<span class="at">angle =</span> <span class="dv">90</span>), <span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"blue"</span>, <span class="at">mid =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"red"</span>, <span class="at">midpoint =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> theme_base_size) <span class="sc">+</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Looking for patterns in model coefficients and p-values"</span>,</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"Model feature"</span>,</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Model"</span>,</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> <span class="st">"Feature coefficient"</span>,</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Feature p-value: &lt; 0.001 = ***</span><span class="sc">\n</span><span class="st">&lt; 0.01 = **</span><span class="sc">\n</span><span class="st">&lt; 0.05 = *</span><span class="sc">\n</span><span class="st">&lt; 0.1 = ."</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>show_text) {</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>    ret <span class="ot">&lt;-</span> ret <span class="sc">+</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_blank</span>())</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>  ret</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+</section>
+<section id="sec-wrangle-data" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Wrangle Data</h1>
+<p>I will now use the verbs I created in <a href="#sec-verbs">Verbs</a> to import, tidy, transform and visualize the data, in preparation for modelling.</p>
+<section id="wrangle-blacktriangleright-data-source" class="level2">
+<h2 class="anchored" data-anchor-id="wrangle-blacktriangleright-data-source">Wrangle <span class="math inline">\(\blacktriangleright\)</span> Data Source</h2>
+<p>The data we were asked to analyze for this assignment is a COVID-19 dataset from Johns Hopkins.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> It contains 5 main files of interest:</p>
+<ul>
+<li>Global cases: <code>time_series_covid19_confirmed_global.csv</code></li>
+<li>US cases: <code>time_series_covid19_confirmed_US.csv</code></li>
+<li>Global deaths: <code>time_series_covid19_deaths_global.csv</code></li>
+<li>US deaths: <code>time_series_covid19_deaths_US.csv</code></li>
+<li>Global population: <code>UID_ISO_FIPS_LookUp_Table.csv</code></li>
+</ul>
+<p>This analysis was initially designed to be able to work with US and Global data simultaneously. However, the US files are significantly larger than the Global files, so, in order to speed up knitting time, I will use only the Global files. Additionally, I have no need for population data in the analysis I plan to run, so I will omit that as well.</p>
+<p>The files I will use in this analysis are therefore:</p>
+<ul>
+<li>Global cases: <code>time_series_covid19_confirmed_global.csv</code></li>
+<li>Global deaths: <code>time_series_covid19_deaths_global.csv</code></li>
+</ul>
+<p>These files collate daily counts of COVID-19 <code>cases</code> and <code>deaths</code> from governments and health authorities around the world. Although the raw data has daily granularity, I will be transforming it to weekly for use in my model.</p>
+<aside id="footnotes" class="footnotes footnotes-end-of-section" role="doc-footnote">
+<hr>
+<ol start="2">
+<li id="fn2"><p>Sourced from: <a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data" class="uri">https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>
+</section>
+<section id="wrangle-blacktriangleright-import-global-cases" class="level2">
+<h2 class="anchored" data-anchor-id="wrangle-blacktriangleright-import-global-cases">Wrangle <span class="math inline">\(\blacktriangleright\)</span> Import Global Cases</h2>
+<p>Let’s import the global cases data. I will immediately roll it up to weekly granularity, to make it a more manageable size:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>global_cases <span class="ot">&lt;-</span> <span class="fu">get_global_cases</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roll_up</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cases =</span> <span class="fu">max</span>(cases),</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_unit =</span> <span class="st">"week"</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We end up with a dataframe like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_n</span>(global_cases, <span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">present_table</span>(<span class="at">caption =</span> <span class="st">"Four randomly-sampled rows from `global_cases`"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="tbl-global-cases-sample" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-global-cases-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">combined_key</th>
+<th style="text-align: left;">date</th>
+<th style="text-align: left;">cases</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">MS Zaandam</td>
+<td style="text-align: left;">2022-04-03</td>
+<td style="text-align: left;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Turks and Caicos Islands, United Kingdom</td>
+<td style="text-align: left;">2020-03-29</td>
+<td style="text-align: left;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Benin</td>
+<td style="text-align: left;">2022-03-20</td>
+<td style="text-align: left;">26952</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Eritrea</td>
+<td style="text-align: left;">2021-10-10</td>
+<td style="text-align: left;">6773</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-global-cases-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Four randomly-sampled rows from <code>global_cases</code>
+</figcaption>
+</figure>
+</div>
+</div>
+<p>Let’s look at the data graphically:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(global_cases)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-global-cases" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-global-cases-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="cvd_data_report_quarto_alenters_files/figure-html/fig-global-cases-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-global-cases-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Output of <code>plot()</code> for <code>global_cases</code>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Note that <code>cases</code> are monotonically increasing, i.e.&nbsp;the metric reported in the files is actually <strong>cumulative</strong> cases, which is why I used <code>max()</code> to perform the aggragation when rolling up from daily to weekly. I want to work with incremental cases, so I will need to address this.</p>
+</section>
+<section id="wrangle-blacktriangleright-import-global-deaths" class="level2">
+<h2 class="anchored" data-anchor-id="wrangle-blacktriangleright-import-global-deaths">Wrangle <span class="math inline">\(\blacktriangleright\)</span> Import Global Deaths</h2>
+<p>Now, let’s repeat the above process to import the global deaths data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>global_deaths <span class="ot">&lt;-</span> <span class="fu">get_global_deaths</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roll_up</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">deaths =</span> <span class="fu">max</span>(deaths),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_unit =</span> <span class="st">"week"</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We end up with a dataframe like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_n</span>(global_deaths, <span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">present_table</span>(<span class="at">caption =</span> <span class="st">"Four randomly-sampled rows from `global_deaths`"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="tbl-global-deaths-sample" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-global-deaths-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">combined_key</th>
+<th style="text-align: left;">date</th>
+<th style="text-align: left;">deaths</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Maldives</td>
+<td style="text-align: left;">2021-08-01</td>
+<td style="text-align: left;">222</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Peru</td>
+<td style="text-align: left;">2022-10-30</td>
+<td style="text-align: left;">217069</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Gansu, China</td>
+<td style="text-align: left;">2022-06-19</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Congo (Brazzaville)</td>
+<td style="text-align: left;">2020-08-02</td>
+<td style="text-align: left;">58</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-global-deaths-sample-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Four randomly-sampled rows from <code>global_deaths</code>
+</figcaption>
+</figure>
+</div>
+</div>
+<p>Graphical view:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(global_deaths)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-global-deaths" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-global-deaths-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="cvd_data_report_quarto_alenters_files/figure-html/fig-global-deaths-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-global-deaths-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Output of <code>plot()</code> for <code>global_deaths</code>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Global deaths are also cumulative.</p>
+</section>
+<section id="wrangle-blacktriangleright-tidy" class="level2">
+<h2 class="anchored" data-anchor-id="wrangle-blacktriangleright-tidy">Wrangle <span class="math inline">\(\blacktriangleright\)</span> Tidy</h2>
+<p>Before doing any further work with the dataframes, I will check each one to ensure that it is tidy.</p>
+<section id="the-three-tidiness-requirements" class="level3">
+<h3 class="anchored" data-anchor-id="the-three-tidiness-requirements">The three tidiness requirements:</h3>
+<p>For a tibble to be tidy, three requirements should be met:</p>
+<ol type="1">
+<li>Each variable has its own column</li>
+<li>Each observation has its own row</li>
+<li>Each value has its own cell</li>
+</ol>
+<p>The book <em>R For Data Science</em> notes<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> that if two of these are true the third is also guaranteed to be true, so I will check the first two.</p>
+<aside id="footnotes" class="footnotes footnotes-end-of-section" role="doc-footnote">
+<hr>
+<ol start="3">
+<li id="fn3"><p><a href="https://r4ds.had.co.nz/tidy-data.html" class="uri">https://r4ds.had.co.nz/tidy-data.html</a><a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>
+</section>
+<section id="tidy-blacktriangleright-does-each-variable-have-its-own-column" class="level3">
+<h3 class="anchored" data-anchor-id="tidy-blacktriangleright-does-each-variable-have-its-own-column">Tidy <span class="math inline">\(\blacktriangleright\)</span> Does each variable have its own column?</h3>
+<p>Short answer: <strong>yes</strong>.</p>
+<p>This was handled during import, by pivoting all of the date columns (that were making each file extremely wide) into a <code>location, date, value</code> format that stores the timeseries of cases and deaths for each location.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(global_cases)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 47,396
+Columns: 3
+$ combined_key &lt;chr&gt; "Afghanistan", "Afghanistan", "Afghanistan", "Afghanistan…
+$ date         &lt;date&gt; 2020-01-19, 2020-01-26, 2020-02-02, 2020-02-09, 2020-02-…
+$ cases        &lt;int&gt; 0, 0, 0, 0, 0, 5, 8, 14, 26, 106, 270, 521, 908, 1330, 24…</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(global_deaths)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 47,396
+Columns: 3
+$ combined_key &lt;chr&gt; "Afghanistan", "Afghanistan", "Afghanistan", "Afghanistan…
+$ date         &lt;date&gt; 2020-01-19, 2020-01-26, 2020-02-02, 2020-02-09, 2020-02-…
+$ deaths       &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 5, 15, 30, 43, 72, 105, 168…</code></pre>
+</div>
+</div>
+<p>No variable is spread across multiple columns, and no column contains multiple variables, so this requirement is met.</p>
+</section>
+<section id="tidy-blacktriangleright-does-each-observation-have-its-own-row" class="level3">
+<h3 class="anchored" data-anchor-id="tidy-blacktriangleright-does-each-observation-have-its-own-row">Tidy <span class="math inline">\(\blacktriangleright\)</span> Does each observation have its own row?</h3>
+<p>Short answer: <strong>yes</strong>.</p>
+<p>The main thing to look for here is duplicate observations in a single location/date. I created a <code>count_duplicates()</code> verb to perform the duplicate-checking. Let’s use <code>purrr::map()</code> to check all dataframes simultaneously, and <code>purrr::list_rbind()</code> to return the results in a dataframe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">global_cases =</span> global_cases <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(combined_key, date),</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">global_deaths =</span> global_deaths <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(combined_key, date)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(count_duplicates) <span class="sc">%&gt;%</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list_rbind</span>(<span class="at">names_to =</span> <span class="st">"dataframe"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">present_table</span>(<span class="at">n =</span> <span class="cn">Inf</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">caption =</span> <span class="st">"Confirming that no value of `copy_count` exceeds 1."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="tbl-check-obs-rows" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-check-obs-rows-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">dataframe</th>
+<th style="text-align: left;">copy_count</th>
+<th style="text-align: left;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">global_cases</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">47396</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">global_deaths</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">47396</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-check-obs-rows-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Confirming that no value of <code>copy_count</code> exceeds 1.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>If there were duplicates in any of the dataframes, <code>count_duplicates()</code> would have reported values <code>&gt; 1</code> in <code>copy_count</code>. Therefore, there are no duplicates in the data.</p>
+<p>We have confirmed that at least two of the three tidiness requirements are met, so the data is tidy.</p>
+</section>
+</section>
+<section id="wrangle-blacktriangleright-join-global-dataframes" class="level2">
+<h2 class="anchored" data-anchor-id="wrangle-blacktriangleright-join-global-dataframes">Wrangle <span class="math inline">\(\blacktriangleright\)</span> Join Global dataframes</h2>
+<p>Let’s join <code>cases</code> and <code>deaths</code> information together to make a single dataframe, and then add some new columns that I will need for modelling. This would arguably be even tidier than having the information spread across two different dataframes.</p>
+<p><code>global_cases</code> and <code>global_deaths</code> should contain exactly the same rows, differing only on whether they contain a <code>cases</code> or <code>deaths</code> column. Therefore, I will join them using <code>inner_join()</code>, with <code>relationship = "one-to-one"</code> and <code>unmatched = "error"</code>. This will cause the code to halt if either of the dataframes is missing row, relative to the other.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>global <span class="ot">&lt;-</span> global_cases <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(global_deaths, </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">join_by</span>(combined_key, date),</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">relationship =</span> <span class="st">"one-to-one"</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">unmatched =</span> <span class="st">"error"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>There were no errors, so the inner join worked perfectly, and we now have a single dataframe called <code>global</code> to use in the rest of the analysis.</p>
+<div style="page-break-after: always;"></div>
+</section>
+</section>
+<section id="sec-summary" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Data Summary</h1>
+<p>Prior to modelling, I want to convert the <code>cases</code> and <code>deaths</code> columns from cumulative to incremental, and I want to add lag columns. Before doing any of this, it would be a good idea to check for missing values and fix any we find. Missing values will affect plots and calculations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>global <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> combined_key            date                cases               deaths       
+ Length:47396       Min.   :2020-01-19   Min.   :        0   Min.   :      0  
+ Class :character   1st Qu.:2020-10-30   1st Qu.:      688   1st Qu.:      3  
+ Mode  :character   Median :2021-08-11   Median :    14599   Median :    152  
+                    Mean   :2021-08-11   Mean   :   965616   Mean   :  13428  
+                    3rd Qu.:2022-05-23   3rd Qu.:   229892   3rd Qu.:   3052  
+                    Max.   :2023-03-05   Max.   :103802702   Max.   :1123836  </code></pre>
+</div>
+</div>
+<p>According to the summary, there are no missing values in the <code>global</code> dataframe. (They would have their own row in the summary if they existed.) We can run this check to throw an error if missing values creep into the data in the future.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(global <span class="sc">%&gt;%</span> <span class="fu">has_na</span>()) {</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(<span class="st">"NA values found in dataset. Please fix."</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-transform" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Transform</h1>
+<p>Now that the raw data is as tidy as can be, let’s move on to transforming it to suit our modelling needs.</p>
+<section id="transform-blacktriangleright-cumulative-to-incremental" class="level2">
+<h2 class="anchored" data-anchor-id="transform-blacktriangleright-cumulative-to-incremental">Transform <span class="math inline">\(\blacktriangleright\)</span> Cumulative to incremental</h2>
+<p>We saw earlier that the <code>cases</code> and <code>deaths</code> data provided is cumulative, but for my analysis, I would like to work with incremental values. I will use a differencing transform to convert from cumulative to incremental.</p>
+<p>I will create two incremental columns called <code>new_cases</code> and <code>new_deaths</code>, using the <code>add_difference_col()</code> verb, which internally makes use of <code>dplyr</code>’s <code>lag()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>global <span class="ot">&lt;-</span> global <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_difference_col</span>(cases, <span class="st">"new_cases"</span>, combined_key, date) <span class="sc">%&gt;%</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_difference_col</span>(deaths, <span class="st">"new_deaths"</span>, combined_key, date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s pick a random location and view the results for it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>random_location <span class="ot">&lt;-</span> global <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(deaths <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(combined_key) <span class="sc">%&gt;%</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">deframe</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>global <span class="sc">%&gt;%</span> </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(combined_key <span class="sc">==</span> random_location) <span class="sc">%&gt;%</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(deaths <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(date) <span class="sc">%&gt;%</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">present_table</span>(<span class="at">n =</span> <span class="dv">10</span>,</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">caption =</span> <span class="fu">paste</span>(<span class="st">"Post-differencing. Ten consecutive rows from"</span>,</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"`global`, for a random location."</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="tbl-differenced-global" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-differenced-global-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">combined_key</th>
+<th style="text-align: left;">date</th>
+<th style="text-align: left;">cases</th>
+<th style="text-align: left;">deaths</th>
+<th style="text-align: left;">new_cases</th>
+<th style="text-align: left;">new_deaths</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">2020-03-29</td>
+<td style="text-align: left;">950</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">499</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">2020-04-05</td>
+<td style="text-align: left;">1312</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">362</td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">2020-04-12</td>
+<td style="text-align: left;">1422</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">110</td>
+<td style="text-align: left;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">2020-04-19</td>
+<td style="text-align: left;">1470</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">48</td>
+<td style="text-align: left;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">2020-04-26</td>
+<td style="text-align: left;">1487</td>
+<td style="text-align: left;">20</td>
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">2020-05-03</td>
+<td style="text-align: left;">1494</td>
+<td style="text-align: left;">21</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">2020-05-10</td>
+<td style="text-align: left;">1499</td>
+<td style="text-align: left;">22</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">2020-05-17</td>
+<td style="text-align: left;">1504</td>
+<td style="text-align: left;">22</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">2020-05-24</td>
+<td style="text-align: left;">1504</td>
+<td style="text-align: left;">23</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">2020-05-31</td>
+<td style="text-align: left;">1504</td>
+<td style="text-align: left;">23</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-differenced-global-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Post-differencing. Ten consecutive rows from <code>global</code>, for a random location.
+</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="transform-blacktriangleright-add-lags" class="level2">
+<h2 class="anchored" data-anchor-id="transform-blacktriangleright-add-lags">Transform <span class="math inline">\(\blacktriangleright\)</span> Add lags</h2>
+<p>The main features I want to use for predicting weekly <code>deaths</code> are the weekly <code>cases</code> from past weeks. These can be obtained using <code>dplyr</code>’s <code>lag()</code> function. I wrote the verb <code>add_lags()</code> to add multiple lag columns simultaneously. It takes care of things like grouping by location and sorting by date, to ensure that <code>lag()</code> obtains the correct numbers for each row in the dataframe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>global <span class="ot">&lt;-</span> global <span class="sc">%&gt;%</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_lags</span>(new_cases, combined_key, date, </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">lags =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">8</span>, </span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">prefix =</span> <span class="st">"new_cases_lag_"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s view the result for the same random location as before, but with the table transposed to make it easier to read. I’ve also restricted the date range to March 2020, for the same reason.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>global <span class="sc">%&gt;%</span> </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(combined_key <span class="sc">==</span> random_location) <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(date <span class="sc">&gt;=</span> <span class="fu">ymd</span>(<span class="st">"2020-03-01"</span>) <span class="sc">&amp;</span> date <span class="sc">&lt;</span> <span class="fu">ymd</span>(<span class="st">"2020-04-01"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(date) <span class="sc">%&gt;%</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">present_table</span>(<span class="at">n =</span> <span class="cn">Inf</span>,</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">caption =</span> <span class="st">"Post-lagging, for a random location."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="tbl-lagged-global" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-lagged-global-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 15%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">combined_key</td>
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">New Zealand</td>
+<td style="text-align: left;">New Zealand</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">date</td>
+<td style="text-align: left;">2020-03-01</td>
+<td style="text-align: left;">2020-03-08</td>
+<td style="text-align: left;">2020-03-15</td>
+<td style="text-align: left;">2020-03-22</td>
+<td style="text-align: left;">2020-03-29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cases</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">52</td>
+<td style="text-align: left;">451</td>
+<td style="text-align: left;">950</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">deaths</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">new_cases</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">46</td>
+<td style="text-align: left;">399</td>
+<td style="text-align: left;">499</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">new_deaths</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">new_cases_lag_0</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">46</td>
+<td style="text-align: left;">399</td>
+<td style="text-align: left;">499</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">new_cases_lag_1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">46</td>
+<td style="text-align: left;">399</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">new_cases_lag_2</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">46</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">new_cases_lag_3</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">new_cases_lag_4</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">new_cases_lag_5</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">new_cases_lag_6</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">new_cases_lag_7</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">new_cases_lag_8</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-lagged-global-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: Post-lagging, for a random location.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>As expected, lagging by <code>n</code> shifts values by <code>n</code> time periods (weeks).</p>
+</section>
+<section id="transform-blacktriangleright-missing-value-recheck" class="level2">
+<h2 class="anchored" data-anchor-id="transform-blacktriangleright-missing-value-recheck">Transform <span class="math inline">\(\blacktriangleright\)</span> Missing value recheck</h2>
+<p>Let’s rerun our check for missing values, to ensure that our transformations didn’t insert missing values in any of the new columns.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(global <span class="sc">%&gt;%</span> <span class="fu">has_na</span>()) {</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(<span class="st">"NA values found in dataset. Please fix."</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+</section>
+<section id="sec-eda" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Exploratory Data Analysis</h1>
+<p>Let’s visually check for a relationship between new_cases and new_deaths in various locations.</p>
+<p>I will be plotting on a log-log scale, so I will filter for values <code>&gt; 0</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>global <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">starts_with</span>(<span class="st">"new_cases_lag_"</span>),</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"lag_amount"</span>,</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"val"</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(val <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> new_deaths <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> val, <span class="at">y =</span> new_deaths)) <span class="sc">+</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> combined_key), <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">trans =</span> <span class="st">"log10"</span>) <span class="sc">+</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">trans =</span> <span class="st">"log10"</span>) <span class="sc">+</span></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>, <span class="at">aspect.ratio =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>lag_amount, <span class="at">ncol =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Do previous weeks' case numbers predict deaths?"</span>,</span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Visually, a 2-week lag looks like a sweet spot"</span>,</span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Lagged new cases (log scale)"</span>,</span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"New deaths (log scale)"</span></span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-visualize-relationships" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-visualize-relationships-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="cvd_data_report_quarto_alenters_files/figure-html/fig-visualize-relationships-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-visualize-relationships-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Relationship between weekly new cases and weekly new deaths, at various lags
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>From a purely visual analysis, <code>log(new_deaths)</code> seems to have the best correlation with <code>log(new_cases)</code> when lagged by 0-2 weeks. Longer lags cause the correlation to weaken. But it would be interesting to try to formalize this relationship using a model.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="sec-modelling" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Modelling</h1>
+<section id="model-blacktriangleright-filtering" class="level2">
+<h2 class="anchored" data-anchor-id="model-blacktriangleright-filtering">Model <span class="math inline">\(\blacktriangleright\)</span> Filtering</h2>
+<p>Let’s first apply a bit of filtering to <code>global</code>, to exclude any values that won’t work in the models. I will exclude all rows with non-positive values, and I will also exclude locations that have fewer than 100 remaining points in the dataset.</p>
+<p>(There are a few negative values in the dataframe due to the differencing transform, resulting from errors in the raw data where a location’s timeseries doesn’t increase monotonically like it should have. Originally, I was using convex optimization to smooth the curves out prior to differencing, but it was slow to run, so instead I am just excluding problematic rows.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>global_filtered <span class="ot">&lt;-</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  global <span class="sc">%&gt;%</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">if_all</span>(<span class="fu">contains</span>(<span class="st">"deaths"</span>) <span class="sc">|</span> <span class="fu">contains</span>(<span class="st">"cases"</span>), <span class="sc">~</span> .x <span class="sc">&gt;</span> <span class="dv">0</span>))</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>has_enough_points <span class="ot">&lt;-</span> global_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(combined_key) <span class="sc">%&gt;%</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;=</span> min_datapoints) <span class="sc">%&gt;%</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(combined_key)</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>global_filtered <span class="ot">&lt;-</span> global_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(has_enough_points, <span class="at">by =</span> <span class="fu">join_by</span>(combined_key))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model-blacktriangleright-sample-locations" class="level2">
+<h2 class="anchored" data-anchor-id="model-blacktriangleright-sample-locations">Model <span class="math inline">\(\blacktriangleright\)</span> Sample locations</h2>
+<p>Let’s randomly select a small number of locations to plot during model evaluation, to make the figures more manageable. Random selection (vs.&nbsp;hardcoding a list, picking the largest locations, etc.) prevents bias from sneaking into the analysis via my choice of locations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>locations <span class="ot">&lt;-</span> global_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(combined_key) <span class="sc">%&gt;%</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_n</span>(sample_size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model-blacktriangleright-define-model" class="level2">
+<h2 class="anchored" data-anchor-id="model-blacktriangleright-define-model">Model <span class="math inline">\(\blacktriangleright\)</span> Define model</h2>
+<p>This is an important step: deciding the form of the model and what features to put in it. I have gone with a poisson model since we are dealing with count data (and I wanted to learn how to use it!)</p>
+<p>And because the various lag columns are probably highly correlated, and I want my model coefficients to be interpretable, I will select just a handful of them to use as features. My results will be only as good as my feature selection. Future work could include a more systematic way to engineer/select/decorrelate features, such as <code>PCA</code>.</p>
+<p>Note that I restrict training data to dates before <code>train_end_date</code>, which was defined above as 2022-01-01.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(new_deaths <span class="sc">~</span> <span class="fu">log</span>(new_cases_lag_0) <span class="sc">+</span> </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">log</span>(new_cases_lag_2) <span class="sc">+</span> </span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">log</span>(new_cases_lag_4) <span class="sc">+</span> </span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">log</span>(new_cases_lag_6),</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(date <span class="sc">&lt;</span> train_end_date),</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>),</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">na.action =</span> na.exclude</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model-blacktriangleright-apply-many-models-pattern-to-create-per-location-models" class="level2">
+<h2 class="anchored" data-anchor-id="model-blacktriangleright-apply-many-models-pattern-to-create-per-location-models">Model <span class="math inline">\(\blacktriangleright\)</span> Apply “many models” pattern to create per-location models</h2>
+<p>The “many models” pattern was taught in Chapter 25<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> of the first edition of <em>R For Data Science</em>. It allows us to fit many models, while remaining in the context of a dataframe (rather than, for example, breaking out a for loop.)</p>
+<p>I wrote the verbs <code>fit_model_per_location()</code>, <code>get_model_pred_info()</code>, and <code>get_model_fit_info()</code> for:</p>
+<ol type="1">
+<li>performing the fitting,</li>
+<li>calculating the predictions, residuals, and goodness of fit for each model,</li>
+<li>extracting each model’s coefficients and their significance values</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>(model_fits <span class="ot">&lt;-</span> <span class="fu">fit_model_per_location</span>(global_filtered, combined_key, mod))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 109 × 3
+# Groups:   combined_key [109]
+  combined_key data                model 
+  &lt;chr&gt;        &lt;list&gt;              &lt;list&gt;
+1 Japan        &lt;tibble [156 × 14]&gt; &lt;glm&gt; 
+2 Korea, South &lt;tibble [155 × 14]&gt; &lt;glm&gt; 
+3 US           &lt;tibble [156 × 14]&gt; &lt;glm&gt; 
+4 Thailand     &lt;tibble [114 × 14]&gt; &lt;glm&gt; 
+# ℹ 105 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>(model_preds <span class="ot">&lt;-</span> <span class="fu">get_model_pred_info</span>(model_fits))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14,251 × 27
+# Groups:   combined_key [109]
+  combined_key date       cases deaths new_cases new_deaths new_cases_lag_0
+  &lt;chr&gt;        &lt;date&gt;     &lt;int&gt;  &lt;int&gt;     &lt;int&gt;      &lt;int&gt;           &lt;int&gt;
+1 Japan        2020-03-15  1059     36       264         14             264
+2 Japan        2020-03-22  1728     56       669         20             669
+3 Japan        2020-03-29  3525     87      1797         31            1797
+4 Japan        2020-04-05  6951    138      3426         51            3426
+# ℹ 14,247 more rows
+# ℹ 20 more variables: new_cases_lag_1 &lt;int&gt;, new_cases_lag_2 &lt;int&gt;,
+#   new_cases_lag_3 &lt;int&gt;, new_cases_lag_4 &lt;int&gt;, new_cases_lag_5 &lt;int&gt;,
+#   new_cases_lag_6 &lt;int&gt;, new_cases_lag_7 &lt;int&gt;, new_cases_lag_8 &lt;int&gt;,
+#   model &lt;list&gt;, null.deviance &lt;dbl&gt;, df.null &lt;int&gt;, logLik &lt;dbl&gt;, AIC &lt;dbl&gt;,
+#   BIC &lt;dbl&gt;, deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;, pred &lt;dbl&gt;,
+#   resid &lt;dbl&gt;, gof &lt;dbl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>(model_fit_info <span class="ot">&lt;-</span> <span class="fu">get_model_fit_info</span>(model_fits))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 545 × 9
+# Groups:   combined_key [109]
+  combined_key data     model  term        estimate std.error statistic  p.value
+  &lt;chr&gt;        &lt;list&gt;   &lt;list&gt; &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 Japan        &lt;tibble&gt; &lt;glm&gt;  (Intercept)   0.221     0.0665      3.32 8.87e- 4
+2 Japan        &lt;tibble&gt; &lt;glm&gt;  log(new_ca…  -0.0539    0.0197     -2.74 6.09e- 3
+3 Japan        &lt;tibble&gt; &lt;glm&gt;  log(new_ca…   0.395     0.0399      9.90 4.17e-23
+4 Japan        &lt;tibble&gt; &lt;glm&gt;  log(new_ca…   0.224     0.0394      5.68 1.32e- 8
+# ℹ 541 more rows
+# ℹ 1 more variable: sig_label &lt;chr&gt;</code></pre>
+</div>
+</div>
+<aside id="footnotes" class="footnotes footnotes-end-of-section" role="doc-footnote">
+<hr>
+<ol start="4">
+<li id="fn4"><p><a href="https://r4ds.had.co.nz/many-models.html" class="uri">https://r4ds.had.co.nz/many-models.html</a><a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>
+</section>
+<section id="model-blacktriangleright-goodness-of-fit" class="level2">
+<h2 class="anchored" data-anchor-id="model-blacktriangleright-goodness-of-fit">Model <span class="math inline">\(\blacktriangleright\)</span> Goodness of Fit</h2>
+<p>I will use Cohen’s<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> <span class="math inline">\(R^2_L\)</span> to measure goodness of fit for my poisson model. It is bounded between 0 and 1, similar to <span class="math inline">\(R^2\)</span>. Let’s plot a histogram of this value for each of the many models we fit:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>model_preds <span class="sc">%&gt;%</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> gof)) <span class="sc">+</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> suggested_theme_base_size) <span class="sc">+</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Model fits well in most locations"</span>,</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Goodness of fit"</span>,</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Model count"</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-plot-gof" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plot-gof-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="cvd_data_report_quarto_alenters_files/figure-html/fig-plot-gof-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-gof-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Goodness of fit for the many models.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The histogram shows that most models have a decently high goodness of fit.</p>
+<aside id="footnotes" class="footnotes footnotes-end-of-section" role="doc-footnote">
+<hr>
+<ol start="5">
+<li id="fn5"><p><a href="https://en.wikipedia.org/wiki/Pseudo-R-squared" class="uri">https://en.wikipedia.org/wiki/Pseudo-R-squared</a><a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>
+</section>
+<section id="model-blacktriangleright-model-coeffs" class="level2">
+<h2 class="anchored" data-anchor-id="model-blacktriangleright-model-coeffs">Model <span class="math inline">\(\blacktriangleright\)</span> Model coeffs</h2>
+<p>I was curious to know if there is any pattern across locations in terms of which <code>cases</code> lags the model relies on to make predictions (2 weeks ago, 4 weeks ago, etc). We can use a heatmap to look for patterns. Because there are so many locations in the data, I’ll first sample a handful, and then show the entire set (which will be unreadable, but will give an overall sense of the pattern).</p>
+<p>The number of *s indicate significance level (more is better).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>model_fit_info <span class="sc">%&gt;%</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(locations, </span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">by =</span> <span class="fu">join_by</span>(combined_key)) <span class="sc">%&gt;%</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(model_preds <span class="sc">%&gt;%</span> </span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>               <span class="fu">select</span>(combined_key, gof) <span class="sc">%&gt;%</span> </span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>               <span class="fu">distinct</span>(), </span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">by =</span> <span class="fu">join_by</span>(combined_key)) <span class="sc">%&gt;%</span></span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">"(Intercept)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model_coeffs</span>(combined_key, gof)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-select-model-fits" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-select-model-fits-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="cvd_data_report_quarto_alenters_files/figure-html/fig-select-model-fits-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-select-model-fits-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Model feature coefficients and significance, select locations.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>model_fit_info <span class="sc">%&gt;%</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(model_preds <span class="sc">%&gt;%</span> </span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>               <span class="fu">select</span>(combined_key, gof) <span class="sc">%&gt;%</span> </span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>               <span class="fu">distinct</span>(), </span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">by =</span> <span class="fu">join_by</span>(combined_key)) <span class="sc">%&gt;%</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">"(Intercept)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_model_coeffs</span>(combined_key, gof, <span class="at">show_text =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-all-model-fits" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-all-model-fits-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="cvd_data_report_quarto_alenters_files/figure-html/fig-all-model-fits-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-all-model-fits-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Model feature coefficients and significance, all locations.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>As suspected from our earlier visual analysis, across most of the models, the feature <code>log(new_cases_lag_2)</code> has the largest positive coefficient.</p>
+</section>
+<section id="model-blacktriangleright-predictive-performance" class="level2">
+<h2 class="anchored" data-anchor-id="model-blacktriangleright-predictive-performance">Model <span class="math inline">\(\blacktriangleright\)</span> Predictive performance</h2>
+<p>Let’s see if a model trained up to some cutoff date (2022-01-01) can make good future predictions about number of new deaths, given information about number of new cases in recent weeks.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>n_cols <span class="ot">&lt;-</span> <span class="cf">switch</span> (</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>    knitr<span class="sc">::</span><span class="fu">pandoc_to</span>(),</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">latex =</span> <span class="dv">4</span>,</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">html =</span> <span class="dv">3</span>,</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">3</span> <span class="co"># default</span></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>model_preds <span class="sc">%&gt;%</span></span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(locations, <span class="at">by =</span> <span class="fu">join_by</span>(combined_key)) <span class="sc">%&gt;%</span></span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date)) <span class="sc">+</span></span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> new_deaths, <span class="at">color =</span> <span class="st">"actuals"</span>), </span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> pred, <span class="at">color =</span> <span class="st">"predictions"</span>), </span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">linewidth =</span> <span class="fl">0.7</span>, </span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(</span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">xintercept =</span> train_end_date,</span>
+<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"orange"</span>,</span>
+<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span>,</span>
+<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">1.2</span></span>
+<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> suggested_theme_base_size) <span class="sc">+</span></span>
+<span id="cb58-23"><a href="#cb58-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>) <span class="sc">+</span></span>
+<span id="cb58-24"><a href="#cb58-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">aspect.ratio =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb58-25"><a href="#cb58-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> colors) <span class="sc">+</span></span>
+<span id="cb58-26"><a href="#cb58-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">breaks =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(<span class="st">"2021-01-01"</span>, <span class="st">"2023-01-01"</span>))) <span class="sc">+</span></span>
+<span id="cb58-27"><a href="#cb58-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">trans =</span> <span class="st">"log10"</span>) <span class="sc">+</span></span>
+<span id="cb58-28"><a href="#cb58-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>combined_key, <span class="at">scales =</span> <span class="st">"free"</span>, <span class="at">ncol =</span> n_cols) <span class="sc">+</span></span>
+<span id="cb58-29"><a href="#cb58-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb58-30"><a href="#cb58-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Predictive performance"</span>,</span>
+<span id="cb58-31"><a href="#cb58-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">"Per-location models fit on data up to"</span>,</span>
+<span id="cb58-32"><a href="#cb58-32" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">as.character</span>(train_end_date)),</span>
+<span id="cb58-33"><a href="#cb58-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="fu">paste0</span>(<span class="st">"Prior to "</span>, <span class="fu">as.character</span>(train_end_date), </span>
+<span id="cb58-34"><a href="#cb58-34" aria-hidden="true" tabindex="-1"></a>                    <span class="st">", red-teal correspondence shows models' capacity to fit "</span>,</span>
+<span id="cb58-35"><a href="#cb58-35" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"the training data.</span><span class="sc">\n</span><span class="st"> After "</span>, <span class="fu">as.character</span>(train_end_date), </span>
+<span id="cb58-36"><a href="#cb58-36" aria-hidden="true" tabindex="-1"></a>                    <span class="st">", red-teal correspondence shows models' performance on "</span>,</span>
+<span id="cb58-37"><a href="#cb58-37" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"unseen data.</span><span class="sc">\n</span><span class="st"> Each model has the same form, so it is "</span>,</span>
+<span id="cb58-38"><a href="#cb58-38" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"interesting to consider the performance</span><span class="sc">\n</span><span class="st"> similarities and "</span>,</span>
+<span id="cb58-39"><a href="#cb58-39" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"differences between locations."</span>, <span class="at">sep =</span> <span class="st">""</span>),</span>
+<span id="cb58-40"><a href="#cb58-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb58-41"><a href="#cb58-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Incremental deaths (actual or predicted)"</span></span>
+<span id="cb58-42"><a href="#cb58-42" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-scatter-facets-preds-ts" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scatter-facets-preds-ts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="cvd_data_report_quarto_alenters_files/figure-html/fig-scatter-facets-preds-ts-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scatter-facets-preds-ts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Model predictive performance visual analysis, select locations.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This model evaluation could be formalized numerically, but as a starting place I like being able to see the models’ performance graphically for a random sample of locations. See my takeaways in <a href="#sec-conclusion">Conclusion</a>.</p>
+<div style="page-break-after: always;"></div>
+</section>
+</section>
+<section id="sec-conclusion" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Conclusion</h1>
+<section id="conclusion-blacktriangleright-model-findings" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion-blacktriangleright-model-findings">Conclusion <span class="math inline">\(\blacktriangleright\)</span> Model findings</h2>
+<p>In this analysis, we have seen that in general, the number of <code>new_cases</code> from 2 weeks ago are more predictive of the number of <code>new_deaths</code> than <code>new_cases</code> from 0, 4 or 6 weeks ago.</p>
+<p>A visual inspection of the location models’ predictive performance shows that my modelling approach worked better in some locations than others. There could be numerous explanations for this, which could be investigated in follow-on studies.</p>
+<section id="next-steps" class="level3">
+<h3 class="anchored" data-anchor-id="next-steps">Next steps</h3>
+<p>For modelling, next steps could include a more systematic approach to feature selection/decorrelation, or experimenting with other model forms.</p>
+<p>Model evaluation could be formalized numerically. Locations could even be clustered based on their model coefficients (which features are most predictive of <code>deaths</code>) or their model predictive performance scores. Since there are so many locations, clustering them would make it easier to analyze and discuss them.</p>
+</section>
+</section>
+<section id="conclusion-blacktriangleright-bias" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion-blacktriangleright-bias">Conclusion <span class="math inline">\(\blacktriangleright\)</span> Bias</h2>
+<p>It is important to consider the biases that may have influenced our work and modelling outcomes. I will focus on two potential sources of bias: personal bias and data bias.</p>
+<section id="bias-blacktriangleright-personal" class="level3">
+<h3 class="anchored" data-anchor-id="bias-blacktriangleright-personal">Bias <span class="math inline">\(\blacktriangleright\)</span> Personal</h3>
+<p>An area in which my personal biases influenced my work is in my modelling decisions, including:</p>
+<ul>
+<li>The problem I chose to focus on.</li>
+<li>How I decided to go about solving it (many models, largely because I had read about it and wanted to try it out).</li>
+<li>The features I chose to use.</li>
+</ul>
+<section id="mitigation" class="level4">
+<h4 class="anchored" data-anchor-id="mitigation">Mitigation</h4>
+<p>One way to prevent personal biases from having an effect on one’s work is to choose an evaluation procedure ahead of time, and let that procedure guide you towards the correct model. Future work could involve selecting some evaluation metric, such as RMSE, and trying out numerous models to see which one performs best (though an added complexity in this case is that we are modelling many locations simultaneously, and each location could suit a different model). Before proceeding down this path, I think it would be a good idea to use something like <code>tidymodels</code> to set up a modelling pipeline. The more efficiently I can build, train and compare models, the more likely I am to find the one(s) that are best for the data, rather than being guided by my personal modelling interests/learning objectives.</p>
+<p>A second way I prevented my personal biases from influencing my work was to use random sampling when choosing which locations’ data to look at or plot. In the past, I might have picked a location that was interesting or familiar to me, which is a form of bias.</p>
+</section>
+</section>
+<section id="bias-blacktriangleright-data" class="level3">
+<h3 class="anchored" data-anchor-id="bias-blacktriangleright-data">Bias <span class="math inline">\(\blacktriangleright\)</span> Data</h3>
+<p>Data bias is very important to consider here. As indicated on the Johns Hopkins COVID-19 Data Repository main page<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>, each government supplied its own data via official websites. Each country/regional healthcare system was also responsible for its own testing and treatment procedures. I can think of many ways this could have influenced the data:</p>
+<ul>
+<li>Test availability may have been more constrained in some locations than others, impacting the <code>cases</code> numbers.</li>
+<li>Medical treatments for COVID-19 may have varied by location, resulting in different death rates.</li>
+<li>Instructions regarding when to attribute COVID-19 as the cause of death may have varied by location.</li>
+<li>Environmental reasons: differences in strains and seasons could have impacted populations’ rates of transmission, illness and death.</li>
+<li>The extent to which statistical modelling was used to generate the cases and/or deaths data in each location may also have had an impact.</li>
+</ul>
+<p>All of these could also change over time, further complicating the picture.</p>
+<section id="mitigation-1" class="level4">
+<h4 class="anchored" data-anchor-id="mitigation-1">Mitigation</h4>
+<p>The concern about COVID-19 <code>cases</code> and <code>deaths</code> measurements varying by location and date was partially mitigated by the fact that I chose to model each location separately. However, it is still important to keep these differences in mind, and use them to temper our interpretations of the models. For example, if one location’s model underpredicts <code>deaths</code> (compared with other models), it could be a modelling issue, it could have something to do with the quality of that location’s COVID-19 treatment procedures, or, it could be due to a change in that location’s testing policy causing reported <code>cases</code> to be lower than expected. The main point to keep in mind is that it is difficult to make generalizations when working with such a heterogeneous dataset.</p>
+<div style="page-break-after: always;"></div>
+<aside id="footnotes" class="footnotes footnotes-end-of-section" role="doc-footnote">
+<hr>
+<ol start="6">
+<li id="fn6"><p><a href="https://github.com/CSSEGISandData/COVID-19" class="uri">https://github.com/CSSEGISandData/COVID-19</a><a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>
+</section>
+</section>
+</section>
+</section>
+<section id="sec-appendix" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Appendix</h1>
+<section id="appendix-a" class="level2">
+<h2 class="anchored" data-anchor-id="appendix-a">Appendix A <span class="math inline">\(\blacktriangleright\)</span> Session Info</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.3.2 (2023-10-31)
+Platform: x86_64-apple-darwin20 (64-bit)
+Running under: macOS Monterey 12.7.3
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Edmonton
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] knitr_1.45      lubridate_1.9.3 forcats_1.0.0   stringr_1.5.1  
+ [5] dplyr_1.1.4     purrr_1.0.2     readr_2.1.5     tidyr_1.3.1    
+ [9] tibble_3.2.1    ggplot2_3.5.0   tidyverse_2.0.0
+
+loaded via a namespace (and not attached):
+ [1] utf8_1.2.4        generics_0.1.3    lattice_0.22-6    stringi_1.8.3    
+ [5] hms_1.1.3         digest_0.6.34     magrittr_2.0.3    evaluate_0.23    
+ [9] grid_4.3.2        timechange_0.3.0  fastmap_1.1.1     Matrix_1.6-1.1   
+[13] jsonlite_1.8.8    backports_1.4.1   mgcv_1.9-0        fansi_1.0.6      
+[17] scales_1.3.0      cli_3.6.2         rlang_1.1.3       crayon_1.5.2     
+[21] bit64_4.0.5       munsell_0.5.0     splines_4.3.2     withr_3.0.0      
+[25] yaml_2.3.8        tools_4.3.2       parallel_4.3.2    tzdb_0.4.0       
+[29] colorspace_2.1-0  broom_1.0.5       curl_5.2.0        vctrs_0.6.5      
+[33] R6_2.5.1          lifecycle_1.0.4   htmlwidgets_1.6.4 bit_4.0.5        
+[37] vroom_1.6.5       pkgconfig_2.0.3   pillar_1.9.0      gtable_0.3.4     
+[41] glue_1.7.0        xfun_0.43         tidyselect_1.2.0  rstudioapi_0.15.0
+[45] farver_2.1.1      htmltools_0.5.7   nlme_3.1-163      labeling_0.4.3   
+[49] rmarkdown_2.25    compiler_4.3.2   </code></pre>
+</div>
+</div>
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-copyright"><h2 class="anchored quarto-appendix-heading">Copyright</h2><div class="quarto-appendix-contents"><div>Copyright A. Lenters 2024. All Rights Reserved.</div></div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
